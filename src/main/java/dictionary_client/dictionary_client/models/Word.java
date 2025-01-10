@@ -3,6 +3,7 @@ package dictionary_client.dictionary_client.models;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -15,23 +16,16 @@ public class Word {
     private int id;
     @Column(name = "original")
     private String original;
-    @Column(name = "translation")
-    private  String translation;
+    @OneToMany(mappedBy = "word")
+    List<Translation> translationList;
+//    @Column(name = "translation")
+//    private  String translation;
     @Column(name = "progress")
     private  int progress;
     @Column(name = "registration_date")
     @Temporal(TemporalType.TIMESTAMP)
     Date registrationDate;
 
-    @Override
-    public String toString() {
-        return "Word{" +
-                "id=" + id +
-                ", original='" + original + '\'' +
-                ", translation='" + translation + '\'' +
-                ", progress=" + progress +
-                '}';
-    }
 
     public int getId() {
         return id;
@@ -49,13 +43,6 @@ public class Word {
         this.original = original;
     }
 
-    public String getTranslation() {
-        return translation;
-    }
-
-    public void setTranslation(String translation) {
-        this.translation = translation;
-    }
 
     public int getProgress() {
         return progress;
@@ -71,6 +58,14 @@ public class Word {
 
     public void setRegistrationDate(Date registrationDate) {
         this.registrationDate = registrationDate;
+    }
+
+    public List<Translation> getTranslationList() {
+        return translationList;
+    }
+
+    public void setTranslationList(List<Translation> translationList) {
+        this.translationList = translationList;
     }
 
     @Override

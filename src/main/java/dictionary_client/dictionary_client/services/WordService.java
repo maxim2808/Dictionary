@@ -1,6 +1,7 @@
 package dictionary_client.dictionary_client.services;
 
 
+import dictionary_client.dictionary_client.models.Translation;
 import dictionary_client.dictionary_client.models.Word;
 import dictionary_client.dictionary_client.repositories.WordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +18,12 @@ import java.util.Optional;
 public class WordService {
 
    private final WordRepository wordRepository;
+   private final TranslationService translationService;
+
     @Autowired
-    public WordService(WordRepository wordRepository) {
+    public WordService(WordRepository wordRepository, TranslationService translationService) {
         this.wordRepository = wordRepository;
+        this.translationService = translationService;
     }
 
     public Optional<Word>findById(int id) {
@@ -57,8 +61,8 @@ public class WordService {
         return findAllOriginal().contains(word);
     }
 
-    public boolean addWord(String original, String translation){
-      //  System.out.println("original: " + original + " translation: " + translation);
+    public boolean addWord(String original, List<String> translationsString){
+
         if(listContainWord(original)){
 
             return false;
@@ -66,19 +70,36 @@ public class WordService {
         else {
             Word word = new Word();
             word.setOriginal(original);
-            word.setTranslation(translation);
+            List<Translation> translations = new ArrayList<>();
             word.setProgress(0);
             save(word);
+            for (String translation : translationsString){
+                Translation translationObj = new Translation();
+                translationObj.setName(translation);
+                translationObj.setWord(word);
+                translations.add(translationObj);
+            }
+            word.setTranslationList(translations);
+            wordRepository.save(word);
+
             return true;
         }
+
+
+
+
+
+
+
+
     }
 
 
     @Transactional
-    public void edit(String original, String translation, int id){
+    public void edit(String original, List<Translation> translations, int id){
         Word word = wordRepository.findById(id).get();
         word.setOriginal(original);
-        word.setTranslation(translation);
+        word.setTranslationList(translations);
         wordRepository.save(word);
     }
 
