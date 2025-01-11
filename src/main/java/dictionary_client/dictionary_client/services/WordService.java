@@ -47,6 +47,20 @@ public class WordService {
     }
 
 
+    public List<String> getTranslationOneWord(Word word){
+        List<String> list = new ArrayList<>();
+        for(Translation translation:word.getTranslationList()){
+            list.add(translation.getName());
+        }
+        return list;
+    }
+
+    public Optional<Word> getWordById(int id){
+        return wordRepository.findById(id);
+    }
+
+
+
 
 
 
@@ -78,6 +92,7 @@ public class WordService {
                 translationObj.setName(translation);
                 translationObj.setWord(word);
                 translations.add(translationObj);
+                translationService.save(translationObj);
             }
             word.setTranslationList(translations);
             wordRepository.save(word);

@@ -1,6 +1,7 @@
 package dictionary_client.dictionary_client;
 
 import dictionary_client.dictionary_client.models.Word;
+import dictionary_client.dictionary_client.services.TranslationService;
 import dictionary_client.dictionary_client.services.WordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -12,6 +13,11 @@ import java.util.*;
 public class DictionaryClientApplication implements CommandLineRunner {
 	@Autowired
 	private WordService wordService;
+    private TranslationService translationService;
+
+    public DictionaryClientApplication(TranslationService translationService) {
+        this.translationService = translationService;
+    }
 
 
     public static void main(String[] args) {
@@ -22,12 +28,12 @@ public class DictionaryClientApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-//        wordService.addWord("people", "люди");
-//        wordService.addWord("mouse", "мышь");
-//       wordService.addWord("tiger", "тигр");
-       // wordService.edit("people", "толпа", 8);
-        wordService.deleteWord(8);
-        System.out.println(wordService.findAllWords());
+        Word word = wordService.getWordById(7).get();
+        System.out.println(wordService.getTranslationOneWord(word));
+
+
+     //System.out.println(wordService.findAllWords());
+
     }
 
 

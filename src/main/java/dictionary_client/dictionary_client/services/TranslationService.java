@@ -18,11 +18,19 @@ public class TranslationService {
         this.translationRepository = translationRepository;
     }
 
-
     @Transactional
-    public void editTranslation(Translation translation) {
-     translationRepository.save(translation);
+    public void save(Translation translation) {
+translationRepository.save(translation);
     }
+
+
+
+
+
+//    @Transactional
+//    public void editTranslation(Translation translation) {
+//     translationRepository.save(translation);
+//    }
 
     @Transactional
     public void addTranslation(String name) {
@@ -30,6 +38,12 @@ public class TranslationService {
     translation.setName(name);
     translation.setRegistrationDate(new Date());
     translationRepository.save(translation);
+    }
+
+
+    @Transactional
+    public void deleteTranslation(int id) {
+        translationRepository.deleteById(id);
     }
 
 

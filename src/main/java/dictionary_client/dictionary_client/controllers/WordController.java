@@ -34,7 +34,7 @@ public class WordController {
     public void addWord() {
         Word word = new Word();
         word.setOriginal("laptop");
-        word.setTranslation("Ноутбук");
+     //   word.setTranslation("Ноутбук");
         word.setProgress(0);
         wordService.save(word);
     }

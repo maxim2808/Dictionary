@@ -16,7 +16,7 @@ public class Word {
     private int id;
     @Column(name = "original")
     private String original;
-    @OneToMany(mappedBy = "word")
+    @OneToMany(mappedBy = "word", fetch = FetchType.EAGER)
     List<Translation> translationList;
 //    @Column(name = "translation")
 //    private  String translation;
@@ -79,5 +79,23 @@ public class Word {
     @Override
     public int hashCode() {
         return Objects.hashCode(original);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Translation translation : translationList) {
+
+            sb.append(translation.getName() + ", ");
+        }
+
+        return "Word{" +
+                "id=" + id +
+                ", original='" + original + '\'' +
+                ", translation =" + sb +
+                "progress=" + progress +
+                ", registrationDate=" + registrationDate +
+                '}';
     }
 }
