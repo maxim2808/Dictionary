@@ -7,16 +7,30 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
 public class TranslationService {
-    @Autowired
-    private final TranslationRepository translationRepository;
 
+    private final TranslationRepository translationRepository;
+    @Autowired
     public TranslationService(TranslationRepository translationRepository) {
         this.translationRepository = translationRepository;
     }
+
+
+    public List<Translation> findAll() {
+      return translationRepository.findAll();
+    }
+
+    public Optional<Translation> findTranslationById(int id) {
+        return translationRepository.findById(id);
+    }
+
+
+
 
     @Transactional
     public void save(Translation translation) {

@@ -38,7 +38,7 @@ public class WordServiceTest {
         List<Word> word =  replaceList();
         List<String> listOriginalWords = wordService.findAllOriginal();
         Assertions.assertEquals(listOriginalWords.size(), 3);
-        Assertions.assertEquals("car", listOriginalWords.get(2));
+        Assertions.assertEquals("grass", listOriginalWords.get(2));
     }
 
     @Test
@@ -58,11 +58,11 @@ public class WordServiceTest {
         List<Word> words =  replaceList();
 
 
-//        Mockito.doAnswer(invocation->{
-//            Translation translation = invocation.getArgument(0);
-//            translations.add(translation);
-//            return null;
-//        }).when(translationRepository).save(Mockito.any(Translation.class));
+        Mockito.doAnswer(invocation->{
+            Translation translation = invocation.getArgument(0);
+            translations.add(translation);
+            return null;
+        }).when(translationService).save(Mockito.any(Translation.class));
 
 
 
@@ -72,11 +72,15 @@ public class WordServiceTest {
             return null;
         }).when(wordRepository).save(Mockito.any(Word.class));
 
-        List<String> trasnlationString = wordService.findAllOriginal();
+        List<String> trasnlationString =new ArrayList<>();
         trasnlationString.add("автобус");
-    //    trasnlationString.add("бус");
+        trasnlationString.add("бус");
         wordService.addWord("bus", trasnlationString);
+        List<String> listForCheck = new ArrayList<>();
+        listForCheck.add("автобус");
+        listForCheck.add("бус");
         Assertions.assertTrue(words.get(3).getOriginal().equals("bus"));
+        Assertions.assertEquals(wordService.getTranslationOneWord(words.get(3)).equals(listForCheck), true);
         Assertions.assertNotNull(words.get(3).getRegistrationDate());
     }
 

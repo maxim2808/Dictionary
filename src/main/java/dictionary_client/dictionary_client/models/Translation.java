@@ -8,7 +8,6 @@ import java.util.Date;
 
 @Entity
 @Table(name = "translation")
-@Data
 public class Translation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,11 +15,12 @@ public class Translation {
     int id;
    @Column(name = "name")
     String name;
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "word_id", referencedColumnName = "id")
     Word word;
     @Temporal(TemporalType.TIMESTAMP)
     Date registrationDate;
+
 
     public int getId() {
         return id;
@@ -52,5 +52,15 @@ public class Translation {
 
     public void setRegistrationDate(Date registrationDate) {
         this.registrationDate = registrationDate;
+    }
+
+    @Override
+    public String toString() {
+        return "Translation{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+             //   ", word=" + word +
+                ", registrationDate=" + registrationDate +
+                '}';
     }
 }

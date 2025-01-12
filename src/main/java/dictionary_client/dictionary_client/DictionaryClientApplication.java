@@ -1,5 +1,6 @@
 package dictionary_client.dictionary_client;
 
+import dictionary_client.dictionary_client.models.Translation;
 import dictionary_client.dictionary_client.models.Word;
 import dictionary_client.dictionary_client.services.TranslationService;
 import dictionary_client.dictionary_client.services.WordService;
@@ -28,12 +29,18 @@ public class DictionaryClientApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Word word = wordService.getWordById(7).get();
-        System.out.println(wordService.getTranslationOneWord(word));
+  // wordService.deleteWord(12);
 
+   // System.out.println(wordService.findAllWords());
+//        List <String> list = new ArrayList<>();
+//        list.add("дом");
+//        list.add("строение");
+//        wordService.addWord("house", list);
+//        System.out.println(wordService.findAllWords());
 
-     //System.out.println(wordService.findAllWords());
-
+//        Translation translation = translationService.findTranslationById(2).get();
+//        System.out.println(translation);
+      System.out.println(translationService.findAll());
     }
 
 

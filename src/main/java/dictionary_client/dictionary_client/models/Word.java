@@ -16,10 +16,11 @@ public class Word {
     private int id;
     @Column(name = "original")
     private String original;
-    @OneToMany(mappedBy = "word", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "word"
+ , fetch = FetchType.EAGER, cascade = CascadeType.REMOVE
+    )
     List<Translation> translationList;
-//    @Column(name = "translation")
-//    private  String translation;
+
     @Column(name = "progress")
     private  int progress;
     @Column(name = "registration_date")

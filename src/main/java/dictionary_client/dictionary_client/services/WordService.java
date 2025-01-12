@@ -92,10 +92,11 @@ public class WordService {
                 translationObj.setName(translation);
                 translationObj.setWord(word);
                 translations.add(translationObj);
+                translationObj.setRegistrationDate(new Date());
                 translationService.save(translationObj);
             }
             word.setTranslationList(translations);
-            wordRepository.save(word);
+            save(word);
 
             return true;
         }
