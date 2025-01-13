@@ -5,7 +5,6 @@ import dictionary_client.dictionary_client.services.WordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class WordController {
     @PostMapping("/add")
     public void addWord() {
         Word word = new Word();
-        word.setOriginal("laptop");
+        word.setName("laptop");
      //   word.setTranslation("Ноутбук");
         word.setProgress(0);
         wordService.save(word);

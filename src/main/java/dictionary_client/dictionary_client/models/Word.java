@@ -15,7 +15,7 @@ public class Word {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "original")
-    private String original;
+    private String name;
     @OneToMany(mappedBy = "word"
  , fetch = FetchType.EAGER, cascade = CascadeType.REMOVE
     )
@@ -36,12 +36,12 @@ public class Word {
         this.id = id;
     }
 
-    public String getOriginal() {
-        return original;
+    public String getName() {
+        return name;
     }
 
-    public void setOriginal(String original) {
-        this.original = original;
+    public void setName(String original) {
+        this.name = original;
     }
 
 
@@ -74,12 +74,12 @@ public class Word {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Word word = (Word) o;
-        return Objects.equals(original, word.original);
+        return Objects.equals(name, word.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(original);
+        return Objects.hashCode(name);
     }
 
 
@@ -93,7 +93,7 @@ public class Word {
 
         return "Word{" +
                 "id=" + id +
-                ", original='" + original + '\'' +
+                ", name='" + name + '\'' +
                 ", translation =" + sb +
                 "progress=" + progress +
                 ", registrationDate=" + registrationDate +

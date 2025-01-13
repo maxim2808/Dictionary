@@ -44,7 +44,7 @@ public class WordService {
         List<Word> words = findAllWords();
         List<String> originalWords = new ArrayList<>();
         for (Word word : words) {
-            originalWords.add(word.getOriginal());
+            originalWords.add(word.getName());
         }
         return originalWords;
     }
@@ -56,6 +56,20 @@ public class WordService {
             list.add(translation.getName());
         }
         return list;
+    }
+
+    public String getOneStringTranslationOneWord(Word word){
+        StringBuilder stringBuilder = new StringBuilder();
+//        for(Translation translation:word.getTranslationList()){
+//            stringBuilder.append(translation.getName()).append(", ");
+//        }
+        for (int i=0; i<word.getTranslationList().size(); i++){
+            if (i+1==word.getTranslationList().size()){
+                stringBuilder.append(word.getTranslationList().get(i).getName()).append("");
+            }
+            else {stringBuilder.append(word.getTranslationList().get(i).getName()).append(", ");}
+        }
+        return stringBuilder.toString();
     }
 
     public Optional<Word> getWordById(int id){
@@ -86,7 +100,7 @@ public class WordService {
         }
         else {
             Word word = new Word();
-            word.setOriginal(original);
+            word.setName(original);
             List<Translation> translations = new ArrayList<>();
             word.setProgress(0);
             save(word);
@@ -109,7 +123,7 @@ public class WordService {
     @Transactional
     public void edit(String original, List<Translation> translations, int id){
         Word word = wordRepository.findById(id).get();
-        word.setOriginal(original);
+        word.setName(original);
         word.setTranslationList(translations);
         wordRepository.save(word);
     }
@@ -128,9 +142,9 @@ public class WordService {
     }
 
     @Transactional
-    public void addOneTranslation(int wordId, String translationName){
-        Word word = wordRepository.findById(wordId).get();
-
+    public void addOneTranslation(String name, String translationName){
+        Word word = wordRepository.findWordsByName(name).get();
+        translationService.addTranslation(word, translationName);
     }
 
 

@@ -34,7 +34,7 @@ public class TranslationServiceTest {
     @Test
     public void testAddedTranslation() {
         Word word = new Word();
-        word.setOriginal("sky");
+        word.setName("sky");
         word.setId(1);
 
         List<Translation> list = new ArrayList<>();

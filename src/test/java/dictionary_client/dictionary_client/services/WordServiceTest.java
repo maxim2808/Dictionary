@@ -5,7 +5,6 @@ import dictionary_client.dictionary_client.models.Translation;
 import dictionary_client.dictionary_client.models.Word;
 import dictionary_client.dictionary_client.repositories.TranslationRepository;
 import dictionary_client.dictionary_client.repositories.WordRepository;
-import net.minidev.json.JSONUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +14,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
@@ -79,7 +77,7 @@ public class WordServiceTest {
         List<String> listForCheck = new ArrayList<>();
         listForCheck.add("автобус");
         listForCheck.add("бус");
-        Assertions.assertTrue(words.get(3).getOriginal().equals("bus"));
+        Assertions.assertTrue(words.get(3).getName().equals("bus"));
         Assertions.assertEquals(wordService.getTranslationOneWord(words.get(3)).equals(listForCheck), true);
         Assertions.assertNotNull(words.get(3).getRegistrationDate());
     }
@@ -112,7 +110,7 @@ public class WordServiceTest {
     private List<Word> getWords(){
         Word word1 = new Word();
         word1.setId(1);
-        word1.setOriginal("book");
+        word1.setName("book");
         List<Translation> list1 = new ArrayList<>();
         Translation translation1Word1 = new Translation();
         translation1Word1.setName("Книга");
@@ -140,7 +138,7 @@ public class WordServiceTest {
         Word word2 = new Word();
         word2.setId(2);
         word2.setTranslationList(list2);
-        word2.setOriginal("car");
+        word2.setName("car");
         word2.setProgress(0);
 
 
@@ -158,7 +156,7 @@ public class WordServiceTest {
 
         Word word3 = new Word();
         word3.setId(3);
-        word3.setOriginal("grass");
+        word3.setName("grass");
         word3.setTranslationList(list3);
         word3.setProgress(0);
         List<Word> words = new ArrayList<>();
