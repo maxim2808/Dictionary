@@ -29,18 +29,10 @@ public class DictionaryClientApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-  // wordService.deleteWord(12);
 
-   // System.out.println(wordService.findAllWords());
-//        List <String> list = new ArrayList<>();
-//        list.add("дом");
-//        list.add("строение");
-//        wordService.addWord("house", list);
-//        System.out.println(wordService.findAllWords());
+       // wordService.deleteOneTranslation(13, "Тест");
+        System.out.println(wordService.findAllWords());
 
-//        Translation translation = translationService.findTranslationById(2).get();
-//        System.out.println(translation);
-      System.out.println(translationService.findAll());
     }
 
 

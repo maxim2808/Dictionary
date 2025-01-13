@@ -33,6 +33,10 @@ public class TranslationServiceTest {
 
     @Test
     public void testAddedTranslation() {
+        Word word = new Word();
+        word.setOriginal("sky");
+        word.setId(1);
+
         List<Translation> list = new ArrayList<>();
         Mockito.doAnswer(invocation -> {
             Translation translation = invocation.getArgument(0);
@@ -40,7 +44,7 @@ public class TranslationServiceTest {
             return null;
 
     }).when(translationRepository).save(Mockito.any(Translation.class));
-        translationService.addTranslation("небо");
+        translationService.addTranslation(word,"небо");
         Assertions.assertEquals("небо", list.get(0).getName());
     }
 

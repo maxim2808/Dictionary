@@ -1,6 +1,7 @@
 package dictionary_client.dictionary_client.services;
 
 import dictionary_client.dictionary_client.models.Translation;
+import dictionary_client.dictionary_client.models.Word;
 import dictionary_client.dictionary_client.repositories.TranslationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,10 @@ public class TranslationService {
         return translationRepository.findById(id);
     }
 
+    public Optional<Translation> findTranslationByName(List<Translation> translations, String name) {
+        return translations.stream().filter(translation -> translation.getName().equals(name)).findFirst();
+    }
+
 
 
 
@@ -47,10 +52,11 @@ translationRepository.save(translation);
 //    }
 
     @Transactional
-    public void addTranslation(String name) {
+    public void addTranslation(Word word, String name) {
     Translation translation = new Translation();
     translation.setName(name);
     translation.setRegistrationDate(new Date());
+    translation.setWord(word);
     translationRepository.save(translation);
     }
 

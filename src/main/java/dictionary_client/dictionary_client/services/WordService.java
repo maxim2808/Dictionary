@@ -5,6 +5,7 @@ import dictionary_client.dictionary_client.models.Translation;
 import dictionary_client.dictionary_client.models.Word;
 import dictionary_client.dictionary_client.repositories.WordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,8 @@ import java.util.Optional;
 @Service
 @Transactional(readOnly = true)
 public class WordService {
+    @Value("${progressAtATime}")
+    int progressAtATimme;
 
    private final WordRepository wordRepository;
    private final TranslationService translationService;
@@ -100,14 +103,6 @@ public class WordService {
 
             return true;
         }
-
-
-
-
-
-
-
-
     }
 
 
@@ -124,8 +119,33 @@ public class WordService {
         wordRepository.deleteById(id);
     }
 
+    @Transactional
+    public void deleteOneTranslation(int wordId, String translationName){
+        Word word = wordRepository.findById(wordId).get();
+        Translation translation =translationService.findTranslationByName(word.getTranslationList(), translationName).get();
+        translationService.deleteTranslation(translation.getId());
+
+    }
+
+    @Transactional
+    public void addOneTranslation(int wordId, String translationName){
+        Word word = wordRepository.findById(wordId).get();
+
+    }
 
 
+
+    @Transactional
+    public void increaseProgress(Word word){
+        word.setProgress(word.getProgress() + progressAtATimme);
+        wordRepository.save(word);
+    }
+
+    @Transactional
+    public void decreaseProgress(Word word){
+        word.setProgress(word.getProgress() - progressAtATimme);
+        wordRepository.save(word);
+    }
 
 
 
