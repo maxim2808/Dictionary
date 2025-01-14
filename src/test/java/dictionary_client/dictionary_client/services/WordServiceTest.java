@@ -35,22 +35,13 @@ public class WordServiceTest {
 //        Mockito.when(wordService.findAllWords()).thenReturn(words);
         List<Word> word =  replaceList();
         List<String> listOriginalWords = wordService.findAllOriginal();
-        Assertions.assertEquals(listOriginalWords.size(), 3);
-        Assertions.assertEquals("grass", listOriginalWords.get(2));
+        Assertions.assertEquals(listOriginalWords.size(), 6);
+        Assertions.assertEquals("apple", listOriginalWords.get(2));
     }
 
     @Test
     public void wordShouldBeAdded(){
-//        List<Translation> translationList = new ArrayList<>();
-//        Translation translation1 = new Translation();
-//        translation1.setId(7);
-//        translation1.setName("автобус");
-//        translationList.add(translation1);
-//
-//        Translation translation2 = new Translation();
-//        translation2.setId(8);
-//        translation2.setName("бус");
-//        translationList.add(translation2);
+
 
         List<Translation> translations = new ArrayList<>();
         List<Word> words =  replaceList();
@@ -77,9 +68,9 @@ public class WordServiceTest {
         List<String> listForCheck = new ArrayList<>();
         listForCheck.add("автобус");
         listForCheck.add("бус");
-        Assertions.assertTrue(words.get(3).getName().equals("bus"));
-        Assertions.assertEquals(wordService.getTranslationOneWord(words.get(3)).equals(listForCheck), true);
-        Assertions.assertNotNull(words.get(3).getRegistrationDate());
+        Assertions.assertTrue(words.get(6).getName().equals("bus"));
+        Assertions.assertEquals(wordService.getTranslationOneWord(words.get(6)).equals(listForCheck), true);
+        Assertions.assertNotNull(words.get(6).getRegistrationDate());
     }
 
 
@@ -88,7 +79,7 @@ public class WordServiceTest {
     @Test
     public void listContainsWordShouldBeTrue(){
         List<Word> words =  replaceList();
-        Assertions.assertTrue(wordService.listContainWord("grass"));
+        Assertions.assertTrue(wordService.listContainWord("apple"));
     }
 
     @Test
@@ -107,65 +98,101 @@ public class WordServiceTest {
         return words;
     }
 
-    private List<Word> getWords(){
-        Word word1 = new Word();
-        word1.setId(1);
-        word1.setName("book");
-        List<Translation> list1 = new ArrayList<>();
-        Translation translation1Word1 = new Translation();
-        translation1Word1.setName("Книга");
-        translation1Word1.setId(1);
-        list1.add(translation1Word1);
-        word1.setTranslationList(list1);
-        word1.setProgress(0);
+//
+public List<Word> getWords(){
+    // Слово 1
+    Word word1 = new Word();
+    word1.setId(1);
+    word1.setName("book");
+    List<Translation> list1 = new ArrayList<>();
+    Translation translation1Word1 = new Translation();
+    translation1Word1.setName("Книга");
+    translation1Word1.setId(1);
+    list1.add(translation1Word1);
+    word1.setTranslationList(list1);
+    word1.setProgress(0);
 
+    // Слово 2
+    Word word2 = new Word();
+    word2.setId(2);
+    word2.setName("car");
+    List<Translation> list2 = new ArrayList<>();
+    Translation translation1Word2 = new Translation();
+    translation1Word2.setName("машина");
+    translation1Word2.setId(2);
+    list2.add(translation1Word2);
+    Translation translation2Word2 = new Translation();
+    translation2Word2.setName("автомобиль");
+    translation2Word2.setId(3);
+    list2.add(translation2Word2);
+    Translation translation3Word2 = new Translation();
+    translation3Word2.setName("легковой автомобиль");
+    translation3Word2.setId(4);
+    list2.add(translation3Word2);
+    word2.setTranslationList(list2);
+    word2.setProgress(0);
 
+    // Слово 3
+    Word word3 = new Word();
+    word3.setId(3);
+    word3.setName("apple");
+    List<Translation> list3 = new ArrayList<>();
+    Translation translation1Word3 = new Translation();
+    translation1Word3.setName("яблоко");
+    translation1Word3.setId(5);
+    list3.add(translation1Word3);
+    Translation translation2Word3 = new Translation();
+    translation2Word3.setName("яблоня");
+    translation2Word3.setId(6);
+    list3.add(translation2Word3);
+    word3.setTranslationList(list3);
+    word3.setProgress(0);
 
-        List<Translation> list2 = new ArrayList<>();
-        Translation translation1Word2 = new Translation();
-        translation1Word2.setName("машина");
-        translation1Word2.setId(2);
-        list2.add(translation1Word2);
-        Translation translation2Word2 = new Translation();
-        translation2Word2.setId(3);
-        translation2Word2.setName("автомобиль");
-        list2.add(translation2Word2);
-        Translation translation3Word2 = new Translation();
-        translation3Word2.setId(4);
-        translation3Word2.setName("легковой автомобиль");
-        list2.add(translation3Word2);
+    // Слово 4
+    Word word4 = new Word();
+    word4.setId(4);
+    word4.setName("computer");
+    List<Translation> list4 = new ArrayList<>();
+    Translation translation1Word4 = new Translation();
+    translation1Word4.setName("компьютер");
+    translation1Word4.setId(6);
+    list4.add(translation1Word4);
+    word4.setTranslationList(list4);
+    word4.setProgress(0);
 
-        Word word2 = new Word();
-        word2.setId(2);
-        word2.setTranslationList(list2);
-        word2.setName("car");
-        word2.setProgress(0);
+    // Слово 5
+    Word word5 = new Word();
+    word5.setId(5);
+    word5.setName("dog");
+    List<Translation> list5 = new ArrayList<>();
+    Translation translation1Word5 = new Translation();
+    translation1Word5.setName("собака");
+    translation1Word5.setId(7);
+    list5.add(translation1Word5);
+    word5.setTranslationList(list5);
+    word5.setProgress(0);
 
+    // Слово 6
+    Word word6 = new Word();
+    word6.setId(6);
+    word6.setName("house");
+    List<Translation> list6 = new ArrayList<>();
+    Translation translation1Word6 = new Translation();
+    translation1Word6.setName("дом");
+    translation1Word6.setId(8);
+    list6.add(translation1Word6);
+    word6.setTranslationList(list6);
+    word6.setProgress(0);
 
-        List<Translation> list3 = new ArrayList<>();
-        Translation translation1Word3 = new Translation();
-        translation1Word3.setId(5);
-        translation1Word3.setName("трава");
-        list3.add(translation1Word3);
+    List<Word> words = new ArrayList<>();
+    words.add(word1);
+    words.add(word2);
+    words.add(word3);
+    words.add(word4);
+    words.add(word5);
+    words.add(word6);
 
-        Translation translation2Word3 = new Translation();
-        translation2Word3.setId(6);
-        translation2Word3.setName("газон");
-        list3.add(translation2Word3);
-
-
-        Word word3 = new Word();
-        word3.setId(3);
-        word3.setName("grass");
-        word3.setTranslationList(list3);
-        word3.setProgress(0);
-        List<Word> words = new ArrayList<>();
-        words.add(word1);
-        words.add(word2);
-        words.add(word3);
-        return words;
-    }
-
-
+    return words;
+}
 
 }

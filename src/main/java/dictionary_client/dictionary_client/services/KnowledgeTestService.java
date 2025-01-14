@@ -5,15 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class KnowledgeTestService {
     @Value("${countWordInTest}")
-    int countWordInTest;
+  public int countWordInTest;
 
     private final WordService wordService;
 
@@ -26,16 +23,28 @@ public class KnowledgeTestService {
     public void simpleTranslationTest(){
         List<Word> allWords = wordService.findAllWords();
         System.out.println("allWords: " + allWords);
+        Scanner scanner = new Scanner(System.in);
         for (Word word : allWords) {
-            System.out.println(getListTranslationWithNumbering(getFixWordListForTest(allWords, word)));
-            System.out.println("\n");
+            List<Word> shuffleListWithFixSize = getFixWordListForTest(allWords, word);
+            System.out.println("shuffleListWithFixSize: " + shuffleListWithFixSize);
+           // System.out.println(getListTranslationWithNumbering(shuffleListWithFixSize));
+            System.out.println(word.getName());
+            System.out.println(getListTranslationWithNumbering(shuffleListWithFixSize));
+
+            boolean answer = checkAnswer(scanner, shuffleListWithFixSize, word);
+            if (answer) {
+                System.out.println("Правильный ответ");
+            }
+            else System.out.println("Неправильный ответ");
         }
+        System.out.println("Тест закончен");
     }
 
-    public List<Word> getFixWordListForTest(List<Word> allWords, Word word){
+   public List<Word> getFixWordListForTest(List<Word> allWords, Word word){
         List<Word> list = new ArrayList<>();
         list.add(word);
         Random random = new Random();
+       System.out.println("count words in test!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! "+ countWordInTest);
         while (list.size() < countWordInTest){
             int index = random.nextInt(allWords.size());
             Word randomWord = allWords.get(index);
@@ -48,7 +57,7 @@ public class KnowledgeTestService {
     }
 
 
-    List<String> getListTranslationWithNumbering(List<Word> listWord){
+    private List<String> getListTranslationWithNumbering(List<Word> listWord){
         List<String> listTranslationString = new ArrayList<>();
        // StringBuilder stringBuilder = new StringBuilder();
         for(int i = 0; i<listWord.size(); i++){
@@ -59,7 +68,15 @@ public class KnowledgeTestService {
         return listTranslationString;
     }
 
-    //public boolean
+    private boolean checkAnswer(Scanner scanner, List<Word> listWord, Word correctWord){
+        System.out.println("Введите свой ответ");
+        int answerNumber = scanner.nextInt();
+        Word selectedWord = listWord.get(answerNumber-1);
+        if (selectedWord.equals(correctWord)){
+            return true;
+        }
+        else return checkAnswer(scanner, listWord, correctWord);
+    }
 
 
 
