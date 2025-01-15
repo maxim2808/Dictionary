@@ -58,19 +58,22 @@ public class WordService {
         return list;
     }
 
-    public String getOneStringTranslationOneWord(Word word){
-        StringBuilder stringBuilder = new StringBuilder();
-//        for(Translation translation:word.getTranslationList()){
-//            stringBuilder.append(translation.getName()).append(", ");
+//    public String getOneStringTranslationOneWord(Word word){
+//        System.out.println("!!!!!!!!!!");
+//
+//        StringBuilder stringBuilder = new StringBuilder();
+////        for(Translation translation:word.getTranslationList()){
+////            stringBuilder.append(translation.getName()).append(", ");
+////        }
+//        for (int i=0; i<word.getTranslationList().size(); i++){
+//            if (i+1==word.getTranslationList().size()){
+//                stringBuilder.append(word.getTranslationList().get(i).getName()).append("");
+//            }
+//            else {stringBuilder.append(word.getTranslationList().get(i).getName()).append(", ");}
 //        }
-        for (int i=0; i<word.getTranslationList().size(); i++){
-            if (i+1==word.getTranslationList().size()){
-                stringBuilder.append(word.getTranslationList().get(i).getName()).append("");
-            }
-            else {stringBuilder.append(word.getTranslationList().get(i).getName()).append(", ");}
-        }
-        return stringBuilder.toString();
-    }
+//        System.out.println("!!!!!!!!!!");
+//        return stringBuilder.toString();
+//    }
 
     public Optional<Word> getWordById(int id){
         return wordRepository.findById(id);

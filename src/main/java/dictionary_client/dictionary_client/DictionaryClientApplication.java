@@ -33,11 +33,11 @@ public class DictionaryClientApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        System.out.println(wordService.findAllWords());
+      //  System.out.println(wordService.findAllWords());
 
       //   wordService.addOneTranslation("mouse", "мышь");
 
-        knowledgeTestService.simpleTranslationTest();
+      //  knowledgeTestService.simpleTranslationTest();
 
 
 

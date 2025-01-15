@@ -14,21 +14,25 @@ public class KnowledgeTestService {
 
     private final WordService wordService;
 
+    public void setCountWordInTest(int countWordInTest) {
+        this.countWordInTest = countWordInTest;
+    }
+
     @Autowired
     public KnowledgeTestService(WordService wordService) {
         this.wordService = wordService;
     }
 
 
-    public void simpleTranslationTest(){
+    public void simpleTranslationTest(Scanner scanner){
         List<Word> allWords = wordService.findAllWords();
         System.out.println("allWords: " + allWords);
-        Scanner scanner = new Scanner(System.in);
+     //   Scanner scanner = new Scanner(System.in);
         for (Word word : allWords) {
             List<Word> shuffleListWithFixSize = getFixWordListForTest(allWords, word);
-            System.out.println("shuffleListWithFixSize: " + shuffleListWithFixSize);
            // System.out.println(getListTranslationWithNumbering(shuffleListWithFixSize));
-            System.out.println(word.getName());
+            System.out.println("word: " +word.getName());
+
             System.out.println(getListTranslationWithNumbering(shuffleListWithFixSize));
 
             boolean answer = checkAnswer(scanner, shuffleListWithFixSize, word);
@@ -44,7 +48,7 @@ public class KnowledgeTestService {
         List<Word> list = new ArrayList<>();
         list.add(word);
         Random random = new Random();
-       System.out.println("count words in test!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! "+ countWordInTest);
+
         while (list.size() < countWordInTest){
             int index = random.nextInt(allWords.size());
             Word randomWord = allWords.get(index);
@@ -53,24 +57,47 @@ public class KnowledgeTestService {
             }
         }
         Collections.shuffle(list);
+
         return list;
     }
 
 
     private List<String> getListTranslationWithNumbering(List<Word> listWord){
+
         List<String> listTranslationString = new ArrayList<>();
        // StringBuilder stringBuilder = new StringBuilder();
         for(int i = 0; i<listWord.size(); i++){
             int number = i+1;
-            String translationWithNumber = String.valueOf(number)+"."+wordService.getOneStringTranslationOneWord(listWord.get(i));
+
+            String translationWithNumber = String.valueOf(number)+"."+getOneStringTranslationOneWord(listWord.get(i));
+
             listTranslationString.add(translationWithNumber);
         }
+
         return listTranslationString;
     }
+
+    public String getOneStringTranslationOneWord(Word word){
+        StringBuilder stringBuilder = new StringBuilder();
+//        for(Translation translation:word.getTranslationList()){
+//            stringBuilder.append(translation.getName()).append(", ");
+//        }
+        for (int i=0; i<word.getTranslationList().size(); i++){
+            if (i+1==word.getTranslationList().size()){
+                stringBuilder.append(word.getTranslationList().get(i).getName()).append("");
+            }
+            else {stringBuilder.append(word.getTranslationList().get(i).getName()).append(", ");}
+        }
+        return stringBuilder.toString();
+    }
+
+
+
 
     private boolean checkAnswer(Scanner scanner, List<Word> listWord, Word correctWord){
         System.out.println("Введите свой ответ");
         int answerNumber = scanner.nextInt();
+        System.out.println("answerNumber: " + answerNumber);
         Word selectedWord = listWord.get(answerNumber-1);
         if (selectedWord.equals(correctWord)){
             return true;
@@ -78,7 +105,9 @@ public class KnowledgeTestService {
         else return checkAnswer(scanner, listWord, correctWord);
     }
 
-
+public void forTest(){
+    System.out.println("for test count word in test: " + countWordInTest);
+}
 
 
 
