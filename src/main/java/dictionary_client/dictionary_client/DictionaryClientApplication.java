@@ -32,7 +32,7 @@ public class DictionaryClientApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-
+     wordService.getWordFromServer("keep2");
       //  System.out.println(wordService.findAllWords());
 
       //   wordService.addOneTranslation("mouse", "мышь");

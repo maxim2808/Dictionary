@@ -1,6 +1,9 @@
 package dictionary_client.dictionary_client.services;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dictionary_client.dictionary_client.models.Translation;
 import dictionary_client.dictionary_client.models.Word;
 import dictionary_client.dictionary_client.repositories.WordRepository;
@@ -8,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -162,6 +168,37 @@ public class WordService {
     public void decreaseProgress(Word word){
         word.setProgress(word.getProgress() - progressAtATimme);
         wordRepository.save(word);
+    }
+
+    @Transactional
+    public boolean getWordFromServer(String wordName) throws JsonProcessingException {
+        RestTemplate template = new RestTemplate();
+        String url = "http://localhost:9090/api/giveWord";
+        String response;
+        try {
+            response = template.postForObject(url, wordName, String.class);
+        }
+        catch (HttpClientErrorException e) {
+            System.out.println("Слово не было найдено");
+            return false;
+        }
+       // String response = template.postForObject(url, wordName, String.class);
+        System.out.println(response);
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode obj = mapper.readTree(response);
+        String nameFromResponse = obj.get("name").asText();
+        JsonNode listNode = obj.get("translations");
+        List<String> stringList = new ArrayList<>();
+        for (JsonNode node : listNode){
+            stringList.add(node.asText());
+        }
+
+       // List<String> stringList = obj.get("translations").asLi;
+        System.out.println("nameFromResponse: " + nameFromResponse);
+        System.out.println("stringList: " + stringList);
+        return  true;
+
+
     }
 
 

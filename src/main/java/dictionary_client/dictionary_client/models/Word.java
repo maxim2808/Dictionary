@@ -14,7 +14,7 @@ public class Word {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "original")
+    @Column(name = "name")
     private String name;
     @OneToMany(mappedBy = "word"
  , fetch = FetchType.EAGER, cascade = CascadeType.REMOVE
