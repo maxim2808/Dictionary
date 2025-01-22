@@ -22,7 +22,9 @@ public class WordController {
 
     @PostMapping("/giveWord")
     public ResponseEntity<StringWord> giveWord(@RequestBody String wordName) {
+
         StringWord stringWord = wordService.giveStringWordByName(wordName);
+
         return new ResponseEntity<>(stringWord, HttpStatus.OK);
     }
 

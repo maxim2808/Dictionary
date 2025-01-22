@@ -28,11 +28,12 @@ public class DictionaryServerApplication
 
 	@Override
 	public void run(String... args) throws Exception{
-		List<String> list = new ArrayList<>();
-		list.add("держать");
-		list.add("сохранять");
-		list.add("хранить");
-		wordService.addWord("keep", list);
+		System.out.println(wordService.findAllWords());
+//		List<String> list = new ArrayList<>();
+//		list.add("держать");
+//		list.add("сохранять");
+//		list.add("хранить");
+//		wordService.addWord("keep", list);
 
 
 	}

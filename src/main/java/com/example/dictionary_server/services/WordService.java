@@ -31,7 +31,6 @@ public class WordService {
 
 
     public List<Word> findAllWords(){
-        //   System.out.println(wordRepository.findAll());
         return wordRepository.findAll();
     }
 
@@ -119,29 +118,23 @@ public class WordService {
 
     @Transactional
     public void addOneTranslation(String name, String translationName){
-        Word word = wordRepository.findWordsByName(name).get();
+        Word word = wordRepository.findWordByName(name).get();
         translationService.addTranslation(word, translationName);
     }
 
 
-
     public StringWord giveStringWordByName(String wordName){
-
-            Word word = wordRepository.findWordsByName(wordName).orElseThrow(WordNotFoundException::new);
-            List<String> listStringTranslation = getTranslationOneWord(word);
-            StringWord stringWord = new StringWord();
-            stringWord.setName(word.getName());
-            stringWord.setTranslations(listStringTranslation);
-            return stringWord;
-
+        Word word = findWordByName(wordName);
+        List<String> listStringTranslation = getTranslationOneWord(word);
+        StringWord stringWord = new StringWord();
+        stringWord.setName(word.getName());
+        stringWord.setTranslations(listStringTranslation);
+        return stringWord;
     }
 
-
-
-
-
-
-
+    public Word findWordByName(String wordName){
+        return wordRepository.findWordByName(wordName).orElseThrow(WordNotFoundException::new);
+    }
 
 
 

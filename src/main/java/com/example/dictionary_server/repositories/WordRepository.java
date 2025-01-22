@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface WordRepository  extends JpaRepository<Word, Integer> {
-    public Optional<Word> findWordsByName(String original);
+    public Optional<Word> findWordByName(String original);
 }
