@@ -1,15 +1,12 @@
 package dictionary_client.dictionary_client;
 
-import dictionary_client.dictionary_client.models.Translation;
-import dictionary_client.dictionary_client.models.Word;
+import dictionary_client.dictionary_client.dto.WordDTO;
 import dictionary_client.dictionary_client.services.KnowledgeTestService;
 import dictionary_client.dictionary_client.services.TranslationService;
 import dictionary_client.dictionary_client.services.WordService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import java.util.*;
 
 @SpringBootApplication
 public class DictionaryClientApplication implements CommandLineRunner {
@@ -32,8 +29,13 @@ public class DictionaryClientApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-     wordService.getWordFromServer("keep2");
-      //  System.out.println(wordService.findAllWords());
+     WordDTO wordDTO = wordService.getWordFromServer("keep");
+        System.out.println(wordDTO);
+     wordService.saveWordFromServer(wordDTO, false);
+
+
+
+     // System.out.println(wordService.findAllWords());
 
       //   wordService.addOneTranslation("mouse", "мышь");
 

@@ -30,7 +30,7 @@ public class WordServiceTest {
     private WordRepository wordRepository;
 
     @Test
-    public void findAllOriginalSizeShouldBe3(){
+    public void findAllOriginalSizeShouldBe6(){
 //        List<Word> words = getWords();
 //        Mockito.when(wordService.findAllWords()).thenReturn(words);
         List<Word> word =  replaceList();

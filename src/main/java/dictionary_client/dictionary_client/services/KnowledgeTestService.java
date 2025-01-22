@@ -105,9 +105,7 @@ public class KnowledgeTestService {
         else return checkAnswer(scanner, listWord, correctWord);
     }
 
-public void forTest(){
-    System.out.println("for test count word in test: " + countWordInTest);
-}
+
 
 
 

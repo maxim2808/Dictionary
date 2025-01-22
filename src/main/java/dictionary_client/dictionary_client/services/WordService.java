@@ -4,6 +4,7 @@ package dictionary_client.dictionary_client.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dictionary_client.dictionary_client.dto.WordDTO;
 import dictionary_client.dictionary_client.models.Translation;
 import dictionary_client.dictionary_client.models.Word;
 import dictionary_client.dictionary_client.repositories.WordRepository;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -46,6 +46,7 @@ public class WordService {
     }
 
     public List<String> findAllOriginal(){
+
       //  System.out.println("find all originals started");
         List<Word> words = findAllWords();
         List<String> originalWords = new ArrayList<>();
@@ -170,8 +171,8 @@ public class WordService {
         wordRepository.save(word);
     }
 
-    @Transactional
-    public boolean getWordFromServer(String wordName) throws JsonProcessingException {
+    //@Transactional
+    public WordDTO getWordFromServer(String wordName) throws JsonProcessingException {
         RestTemplate template = new RestTemplate();
         String url = "http://localhost:9090/api/giveWord";
         String response;
@@ -180,7 +181,7 @@ public class WordService {
         }
         catch (HttpClientErrorException e) {
             System.out.println("Слово не было найдено");
-            return false;
+            return null;
         }
        // String response = template.postForObject(url, wordName, String.class);
         System.out.println(response);
@@ -196,9 +197,19 @@ public class WordService {
        // List<String> stringList = obj.get("translations").asLi;
         System.out.println("nameFromResponse: " + nameFromResponse);
         System.out.println("stringList: " + stringList);
-        return  true;
+        WordDTO wordDTO = new WordDTO();
+        wordDTO.setName(nameFromResponse);
+        wordDTO.setTranslations(stringList);
+        return wordDTO;
+    }
 
+    public void saveWordFromServer(WordDTO wordDTO, boolean needSave){
 
+        if (needSave==false||wordDTO==null)
+        {
+            return;
+        }
+        addWord(wordDTO.getName(), wordDTO.getTranslations());
     }
 
 
