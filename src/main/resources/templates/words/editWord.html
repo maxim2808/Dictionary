@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактировать слово</title>
+</head>
+<body>
+<form th:method="PATCH" th:action="@{/words/{id}/edit(id=${idModel})}" th:object="${wordName}">
+    <label for="nameId">Введите слово</label>
+    <input type="text" th:value="${wordName}" id="nameId" name="wordName">
+    <input type="submit" value="Редактировать">
+</form>
+
+<div th:each="translation:${word.getTranslationList()}">
+    <span th:text="${translation.getName()}"></span>
+<!--    <form th:method="DELETE" th:action="@{/words/{id}/edit/{translationId}(id=${idModel},translationId=${translation.getId()})}">-->
+<!--        <input type="button" value="удалить">-->
+<!--    </form>-->
+
+    <form th:method="POST" th:action="@{/words/{id}/edit/{translationId}(id=${idModel},translationId=${translation.getId()})}">
+        <input type="hidden" name="_method" value="DELETE">
+        <input type="submit" value="удалить">
+    </form>
+</div>
+
+
+
+<!--<form th:method="PATCH" th:action="@{/words/{id}/edit(id=${idModel})}" th:object="${wordName}">-->
+
+<!--    <label for="nameId">Введите новое слово:</label>-->
+<!--    <input type="text" th:value="${wordName}" id="nameId" name="wordName">-->
+
+<!--    <input type="submit" value="Редактировать">-->
+<!--</form>-->
+
+
+
+</body>
+</html>

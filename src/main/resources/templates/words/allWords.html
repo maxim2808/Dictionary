@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title>Все слова</title>
+</head>
+<body>
+<div th:each="word:${allWords}">
+    <a th:href="@{/words/{id}(id=${word.getId()})}" th:text="${word.getName()} + '-'"></a>
+    <span th:each="translation, iter:${word.getTranslationList()}">
+        <span th:text="${translation.getName()}"></span>
+        <span th:if="${!iter.last}">,</span>
+    </span>
+    <span th:text="' - ' + ${word.getProgress()}"></span>
+</div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить слово</title>
+</head>
+<body>
+
+
+<form th:method="POST" th:action="@{/words/add}" th:object="${word}">
+    <label for="nameId">Введите слово</label>
+    <input th:type="text" th:field="*{name}" id="nameId">
+    <label for="translationID">Введите основной перевод</label>
+    <input th:type="text" th:field="*{translations[0]}" id="translationID">
+    <input TYPE="submit" value="Добавить">
+</form>
+
+
+</body>
+</html>

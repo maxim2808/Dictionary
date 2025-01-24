@@ -29,13 +29,13 @@ public class DictionaryClientApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-     WordDTO wordDTO = wordService.getWordFromServer("keep");
-        System.out.println(wordDTO);
-     wordService.saveWordFromServer(wordDTO, false);
+//     WordDTO wordDTO = wordService.getWordFromServer("keep");
+//        System.out.println(wordDTO);
+//     wordService.saveWordFromServer(wordDTO, false);
+//
 
-
-
-     // System.out.println(wordService.findAllWords());
+        wordService.deleteWord(11);
+      System.out.println(wordService.findAllWords());
 
       //   wordService.addOneTranslation("mouse", "мышь");
 

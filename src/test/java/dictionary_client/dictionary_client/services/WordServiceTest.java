@@ -1,6 +1,8 @@
 package dictionary_client.dictionary_client.services;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import dictionary_client.dictionary_client.dto.WordDTO;
 import dictionary_client.dictionary_client.models.Translation;
 import dictionary_client.dictionary_client.models.Word;
 import dictionary_client.dictionary_client.repositories.TranslationRepository;
@@ -12,9 +14,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class WordServiceTest {
@@ -28,6 +35,7 @@ public class WordServiceTest {
     private WordService wordService;
     @Mock
     private WordRepository wordRepository;
+
 
     @Test
     public void findAllOriginalSizeShouldBe6(){
@@ -88,17 +96,45 @@ public class WordServiceTest {
         Assertions.assertFalse(wordService.listContainWord("calculator"));
     }
 
-
-
+    @Test
+    public void theWordFromServerCanBeAdded() throws JsonProcessingException {
+        String responseFromServer = "{\"name\":\"dog\",\"translations\":[\"собака\",\"собачка\",\"пёс\"]}";
+        WordService wordService1 = wordService;
+        WordService spy = Mockito.spy(wordService1);
+        Mockito.doReturn(responseFromServer).when(spy).getResponseFromServer("dog");
+        Assertions.assertEquals("dog", spy.getWordFromServer("dog").getName());
+    }
 
 
     private List<Word> replaceList(){
         List<Word> words = getWords();
-        Mockito.when(wordService.findAllWords()).thenReturn(words);
+        when(wordService.findAllWords()).thenReturn(words);
         return words;
     }
 
 //
+
+
+    public Word getOneWord(){
+        Word word = new Word();
+        List<Translation> list = new ArrayList<>();
+        Translation translation = new Translation();
+        translation.setId(1);
+        translation.setWord(word);
+        translation.setName("стол");
+        Translation translation2 = new Translation();
+        translation2.setId(2);
+        translation2.setWord(word);
+        translation2.setName("столик");
+        list.add(translation);
+        list.add(translation2);
+        word.setId(1);
+        word.setName("table");
+        word.setTranslationList(list);
+        return word;
+    }
+
+
 public List<Word> getWords(){
     // Слово 1
     Word word1 = new Word();

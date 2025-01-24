@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -65,22 +66,7 @@ public class WordService {
         return list;
     }
 
-//    public String getOneStringTranslationOneWord(Word word){
-//        System.out.println("!!!!!!!!!!");
-//
-//        StringBuilder stringBuilder = new StringBuilder();
-////        for(Translation translation:word.getTranslationList()){
-////            stringBuilder.append(translation.getName()).append(", ");
-////        }
-//        for (int i=0; i<word.getTranslationList().size(); i++){
-//            if (i+1==word.getTranslationList().size()){
-//                stringBuilder.append(word.getTranslationList().get(i).getName()).append("");
-//            }
-//            else {stringBuilder.append(word.getTranslationList().get(i).getName()).append(", ");}
-//        }
-//        System.out.println("!!!!!!!!!!");
-//        return stringBuilder.toString();
-//    }
+
 
     public Optional<Word> getWordById(int id){
         return wordRepository.findById(id);
@@ -89,11 +75,15 @@ public class WordService {
 
 
 
-
-
     @Transactional()
     public void save(Word word){
         word.setRegistrationDate(new Date());
+        wordRepository.save(word);
+    }
+
+    @Transactional
+    public void edit(Word word, int id){
+         word.setId(id);
         wordRepository.save(word);
     }
 
@@ -131,10 +121,8 @@ public class WordService {
 
 
     @Transactional
-    public void edit(String original, List<Translation> translations, int id){
-        Word word = wordRepository.findById(id).get();
-        word.setName(original);
-        word.setTranslationList(translations);
+    public void changeName(String name, Word word){
+        word.setName(name);
         wordRepository.save(word);
     }
 
@@ -171,8 +159,7 @@ public class WordService {
         wordRepository.save(word);
     }
 
-    //@Transactional
-    public WordDTO getWordFromServer(String wordName) throws JsonProcessingException {
+    public String getResponseFromServer(String wordName){
         RestTemplate template = new RestTemplate();
         String url = "http://localhost:9090/api/giveWord";
         String response;
@@ -183,8 +170,20 @@ public class WordService {
             System.out.println("Слово не было найдено");
             return null;
         }
+        catch (ResourceAccessException e){
+            System.out.println("Не удалось подключиться к серверу");
+            return null;
+        }
+        return response;
+    }
+    public WordDTO getWordFromServer(String wordName) throws JsonProcessingException {
+        String response = getResponseFromServer(wordName);
+        System.out.println("response: " + response);
+        if (response.equals("")||response==null){
+            return null;
+        }
        // String response = template.postForObject(url, wordName, String.class);
-        System.out.println(response);
+        System.out.println("response " + response);
         ObjectMapper mapper = new ObjectMapper();
         JsonNode obj = mapper.readTree(response);
         String nameFromResponse = obj.get("name").asText();
