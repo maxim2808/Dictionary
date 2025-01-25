@@ -25,6 +25,11 @@
 <form th:method="DELETE" th:action="@{/words/{id}/delete(id=${word.getId()})}">
     <input type="submit" value="Удалить">
 </form>
+<br>
+<br>
+<form method="get" action="/words">
+    <input type="submit" value="Все слова">
+</form>
 
 
 

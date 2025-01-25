@@ -5,6 +5,7 @@ import dictionary_client.dictionary_client.models.Word;
 import dictionary_client.dictionary_client.services.TranslationService;
 import dictionary_client.dictionary_client.services.WordService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,11 +16,13 @@ public class WordController {
 
     private final WordService wordService;
     private final TranslationService translationService;
+    private final DataSourceTransactionManagerAutoConfiguration dataSourceTransactionManagerAutoConfiguration;
 
     @Autowired
-    public WordController(WordService wordService, TranslationService translationService) {
+    public WordController(WordService wordService, TranslationService translationService, DataSourceTransactionManagerAutoConfiguration dataSourceTransactionManagerAutoConfiguration) {
         this.wordService = wordService;
         this.translationService = translationService;
+        this.dataSourceTransactionManagerAutoConfiguration = dataSourceTransactionManagerAutoConfiguration;
     }
 
 
@@ -62,7 +65,9 @@ public class WordController {
         model.addAttribute("idModel", id);
         model.addAttribute("wordName", word.getName());
         model.addAttribute("word", word);
-       return "/words/editWord";
+        String newTranslation = "";
+        model.addAttribute("newTranslation", newTranslation);
+;       return "/words/editWord";
     }
 
     @PatchMapping("/{id}/edit")
@@ -77,10 +82,19 @@ public class WordController {
 
     }
 
+    @PostMapping("/{id}/edit")
+    public String addNewTranslation(@PathVariable int id, @ModelAttribute("newTranslation") String translation) {
+        System.out.println("post translation");
+        System.out.println("new translation: " + translation);
+        Word word = wordService.getWordById(id).orElseThrow();
+        translationService.addTranslation(word, translation);
+        return "redirect:/words/" + id+"/edit";
+    }
+
     @DeleteMapping("/{id}/edit/{translationId}")
     public String deleteTraslation(@PathVariable int id, @PathVariable int translationId) {
         translationService.deleteTranslation(translationId);
-        return "redirect:/words/" + id;
+        return "redirect:/words/" + id+"/edit";
     }
 
 

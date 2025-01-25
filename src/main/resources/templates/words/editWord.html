@@ -6,24 +6,32 @@
 </head>
 <body>
 <form th:method="PATCH" th:action="@{/words/{id}/edit(id=${idModel})}" th:object="${wordName}">
-    <label for="nameId">Введите слово</label>
+<!--    <label for="nameId">Введите слово</label>-->
     <input type="text" th:value="${wordName}" id="nameId" name="wordName">
     <input type="submit" value="Редактировать">
 </form>
+<br>
 
+<form th:method="POST" th:action="@{/words/{id}/edit(id=${idModel})}" th:object="${newTranslation}">
+    <input type="text" th:value="${newTranslation}" id="translationID" name="newTranslation">
+    <input type="submit" value="Добавить перевод">
+</form>
+
+<br>
 <div th:each="translation:${word.getTranslationList()}">
     <span th:text="${translation.getName()}"></span>
-<!--    <form th:method="DELETE" th:action="@{/words/{id}/edit/{translationId}(id=${idModel},translationId=${translation.getId()})}">-->
-<!--        <input type="button" value="удалить">-->
-<!--    </form>-->
-
-    <form th:method="POST" th:action="@{/words/{id}/edit/{translationId}(id=${idModel},translationId=${translation.getId()})}">
-        <input type="hidden" name="_method" value="DELETE">
+    <form th:method="DELETE" th:action="@{/words/{id}/edit/{translationId}(id=${idModel},translationId=${translation.getId()})}">
         <input type="submit" value="удалить">
     </form>
+
+
+
 </div>
 
-
+<br>
+<form method="get" action="/words">
+    <input type="submit" value="Все слова">
+</form>
 
 <!--<form th:method="PATCH" th:action="@{/words/{id}/edit(id=${idModel})}" th:object="${wordName}">-->
 
