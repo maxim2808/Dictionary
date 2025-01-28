@@ -1,5 +1,6 @@
 package dictionary_client.dictionary_client.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import dictionary_client.dictionary_client.dto.WordDTO;
 import dictionary_client.dictionary_client.models.Word;
 import dictionary_client.dictionary_client.services.TranslationService;
@@ -51,6 +52,21 @@ public class WordController {
         wordService.addWord(wordDTO.getName(), wordDTO.getTranslations());
         return "redirect:/words";
     }
+    @GetMapping("/addFromServer")
+    public String addWordFromServerGet(Model model) {
+        model.addAttribute("name", new String());
+        return "/words/addWordFromServer";
+    }
+
+    @PostMapping("/addFromServer")
+    public String addWordFromServerPost(@ModelAttribute("name") String name) throws JsonProcessingException {
+        wordService.getWordFromServer(name);
+        return "redirect:/words";
+    }
+
+
+
+
 
     @DeleteMapping("{id}/delete")
     public String deleteWord(@PathVariable int id) {

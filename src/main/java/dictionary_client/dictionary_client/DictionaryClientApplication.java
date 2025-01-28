@@ -34,7 +34,7 @@ public class DictionaryClientApplication implements CommandLineRunner {
 //     wordService.saveWordFromServer(wordDTO, false);
 //
 
-        wordService.deleteWord(11);
+//        wordService.deleteWord(11);
       System.out.println(wordService.findAllWords());
 
       //   wordService.addOneTranslation("mouse", "мышь");

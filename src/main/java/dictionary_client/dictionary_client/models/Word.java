@@ -99,4 +99,14 @@ public class Word {
                 ", registrationDate=" + registrationDate +
                 '}';
     }
+
+    public String getStringTranslation() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < translationList.size()-1; i++) {
+            sb.append(translationList.get(i).getName()).append(", ");
+        }
+        sb.append(translationList.get(translationList.size()-1).getName());
+        return sb.toString();
+    }
+
 }

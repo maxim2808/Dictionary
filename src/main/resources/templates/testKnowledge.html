@@ -1,10 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Тест</title>
 </head>
 <body>
+<!--<div th:each="word:${}" ></div>-->
+<!--<div th:text="${correctWord.getName()}"> </div>-->
+
+<div th:text="'Текущее слово ' + ${correctWord.getName()}"></div>
+
+<div th:each="word, index:${list}" >
+<!--    <form th:method="GET" th:action="@{/test/{id}(id=${index.index})}">-->
+<!--        <input type="submit" th:value="${word.getName()}">-->
+<!--        <input type="hidden" th:value="${correctWord}" name="correctWord" th:field="*{correctWord}">-->
+<!--        <br>-->
+<!--    </form>-->
+
+    <a th:href="@{/test/{id}(id=${index.index}, correctWord=${correctWord})}" th:text="${word.getStringTranslation()}">Link Text</a>
+</div>
 
 </body>
 </html>

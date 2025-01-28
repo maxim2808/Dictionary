@@ -9,10 +9,18 @@ import java.util.*;
 
 @Service
 public class KnowledgeTestService {
+    private final WordService wordService;
+
     @Value("${countWordInTest}")
   public int countWordInTest;
+    List<Word> allListWord;
+    int currentNumberInTest = 0;
+    List<Word> currentFixList;
+    Word word;
+    boolean lastAnswerWasCorrect = true;
 
-    private final WordService wordService;
+
+
 
     public void setCountWordInTest(int countWordInTest) {
         this.countWordInTest = countWordInTest;
@@ -24,41 +32,42 @@ public class KnowledgeTestService {
     }
 
 
-    public void simpleTranslationTest(Scanner scanner){
-        List<Word> allWords = wordService.findAllWords();
-        System.out.println("allWords: " + allWords);
-     //   Scanner scanner = new Scanner(System.in);
-        for (Word word : allWords) {
-            List<Word> shuffleListWithFixSize = getFixWordListForTest(allWords, word);
-           // System.out.println(getListTranslationWithNumbering(shuffleListWithFixSize));
-            System.out.println("word: " +word.getName());
+//    public void simpleTranslationTest(Model model){
+//        List<Word> allWords = wordService.findAllWords();
+//        System.out.println("allWords: " + allWords);
+//        for (int i = 0; i < countWordInTest; i++) {
+//            Word word = allWords.get(i);
+//            List<Word> shuffleListWithFixSize = getFixWordListForTest(allWords, word, i, model);
+//            System.out.println("word: " +word.getName());
+//            System.out.println(getListTranslationWithNumbering(shuffleListWithFixSize));
+//            boolean answer = checkAnswer(1, shuffleListWithFixSize, word);
+//            if (answer) {
+//                System.out.println("Правильный ответ");
+//            }
+//            else System.out.println("Неправильный ответ");
+//        }
+//        System.out.println("Тест закончен");
+//    }
 
-            System.out.println(getListTranslationWithNumbering(shuffleListWithFixSize));
-
-            boolean answer = checkAnswer(scanner, shuffleListWithFixSize, word);
-            if (answer) {
-                System.out.println("Правильный ответ");
-            }
-            else System.out.println("Неправильный ответ");
-        }
-        System.out.println("Тест закончен");
-    }
-
-   public List<Word> getFixWordListForTest(List<Word> allWords, Word word){
+   public List<Word> getFixWordListForTest(int i){
+        if(lastAnswerWasCorrect){
+        initializeWordList();
+        initializeWord();
         List<Word> list = new ArrayList<>();
         list.add(word);
         Random random = new Random();
 
         while (list.size() < countWordInTest){
-            int index = random.nextInt(allWords.size());
-            Word randomWord = allWords.get(index);
+            int index = random.nextInt(allListWord.size());
+            Word randomWord = allListWord.get(index);
             if (!list.contains(randomWord)){
                 list.add(randomWord);
             }
         }
         Collections.shuffle(list);
-
-        return list;
+        currentFixList = list;
+        return list;}
+        else return currentFixList;
     }
 
 
@@ -91,25 +100,91 @@ public class KnowledgeTestService {
         return stringBuilder.toString();
     }
 
+        public List<Word> initializeWordList(){
+        if (allListWord == null){
+            allListWord = wordService.findAllWords();
+            Collections.shuffle(allListWord);
+        }
+        return allListWord;
+        }
+
+        public Word initializeWord(){
+//        if (word==null){
+//            word = allListWord.get(0);
+//        }
+//        return word;
+            word = allListWord.get(currentNumberInTest);
+            return word;
+        }
 
 
 
-    private boolean checkAnswer(Scanner scanner, List<Word> listWord, Word correctWord){
+
+    public boolean checkAnswer(int incomingNumber){
+
         System.out.println("Введите свой ответ");
-        int answerNumber = scanner.nextInt();
+        int answerNumber = incomingNumber;
         System.out.println("answerNumber: " + answerNumber);
-        Word selectedWord = listWord.get(answerNumber-1);
-        if (selectedWord.equals(correctWord)){
+        Word selectedWord = currentFixList.get(answerNumber);
+        System.out.println("selectedWord: " + selectedWord + " word: " + word.getName());
+        if (selectedWord.equals(word)){
+            currentNumberInTest++;
+            wordService.increaseProgress(word);
+            lastAnswerWasCorrect = true;
             return true;
         }
-        else return checkAnswer(scanner, listWord, correctWord);
+        else{
+            lastAnswerWasCorrect = false;
+            wordService.decreaseProgress(word);
+        return false;}
+    }
+    public Boolean testShouldBeFinished(){
+        if(getCurrentNumberInTest()==getAllListWord().size()){
+            finishTest();
+            return true;
+        }
+        return false;
+    }
+
+    public void finishTest(){
+            setCurrentNumberInTest(0);
+
     }
 
 
+    public int getCountWordInTest() {
+        return countWordInTest;
+    }
 
+    public List<Word> getAllListWord() {
+        return allListWord;
+    }
 
+    public int getCurrentNumberInTest() {
+        return currentNumberInTest;
+    }
 
+    public List<Word> getCurrentFixList() {
+        return currentFixList;
+    }
 
+    public Word getWord() {
+        return word;
+    }
 
+    public void setAllListWord(List<Word> allListWord) {
+        this.allListWord = allListWord;
+    }
 
+    public void setCurrentNumberInTest(int currentNumberInTest) {
+        this.currentNumberInTest = currentNumberInTest;
+    }
+
+    public void setCurrentFixList(List<Word> currentFixList) {
+        this.currentFixList = currentFixList;
+    }
+
+    public void setWord(Word word) {
+        this.word = word;
+    }
 }

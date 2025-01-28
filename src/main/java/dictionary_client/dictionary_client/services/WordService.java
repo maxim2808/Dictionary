@@ -149,13 +149,19 @@ public class WordService {
 
     @Transactional
     public void increaseProgress(Word word){
-        word.setProgress(word.getProgress() + progressAtATimme);
+        if ((word.getProgress() + progressAtATimme)>=100){
+            word.setProgress(100);
+        }
+        else{word.setProgress(word.getProgress() + progressAtATimme);}
         wordRepository.save(word);
     }
 
     @Transactional
     public void decreaseProgress(Word word){
-        word.setProgress(word.getProgress() - progressAtATimme);
+        if ((word.getProgress() - progressAtATimme)<=0){
+            word.setProgress(0);
+        }
+        else { word.setProgress(word.getProgress() - progressAtATimme);}
         wordRepository.save(word);
     }
 
@@ -209,6 +215,10 @@ public class WordService {
             return;
         }
         addWord(wordDTO.getName(), wordDTO.getTranslations());
+    }
+
+    public Optional<Word> getWordByName(String wordName){
+        return wordRepository.findWordsByName(wordName);
     }
 
 

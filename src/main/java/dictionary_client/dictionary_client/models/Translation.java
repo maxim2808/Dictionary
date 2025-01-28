@@ -63,4 +63,6 @@ public class Translation {
                 ", registrationDate=" + registrationDate +
                 '}';
     }
+
+
 }
