@@ -148,7 +148,8 @@ public class KnowledgeTestService {
 
     public void finishTest(){
             setCurrentNumberInTest(0);
-
+            allListWord = null;
+            initializeWordList();
     }
 
 

@@ -5,9 +5,9 @@
     <title>Редактировать слово</title>
 </head>
 <body>
-<form th:method="PATCH" th:action="@{/words/{id}/edit(id=${idModel})}" th:object="${wordName}">
-<!--    <label for="nameId">Введите слово</label>-->
-    <input type="text" th:value="${wordName}" id="nameId" name="wordName">
+<form th:method="PATCH" th:action="@{/words/{id}/edit(id=${idModel})}" th:object="${wordDTO}">
+    <input type="text" th:field="*{name}" id="nameId" >
+    <div style="color: red" th:if="${#fields.hasErrors()}" th:errors="*{name}"></div>
     <input type="submit" value="Редактировать">
 </form>
 <br>

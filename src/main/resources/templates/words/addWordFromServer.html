@@ -1,10 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Добавить слово</title>
 </head>
 <body>
+<form th:method="GET" th:action="@{/words/addFromServer}" th:object="${name}">
+    <label for="nameId">Введите слово</label>
+    <input type="text" th:value="${name}" id="nameId", name="name">
 
+    <input type="submit" value="Добавить">
+</form>
+<div th:if="${message!=null}">
+    <span style="color: red" th:text="${message}"></span>
+    <br>
+    <form method="get" action="/words/add">
+        <input type="submit" value="Добавить вручную">
+    </form>
+</div>
+<br>
+<!--<div th:if="${word==null}">слово не найдено</div>-->
+<div th:if="${word!=null}">
+    <span th:text="${word.name}+'-'"></span>
+    <span th:each="translation, iter:${word.getTranslations()}" >
+    <span th:text="${translation}"></span>
+    <span th:if="${!iter.last}">,</span>
+
+    </span>
+    <form method="post" th:action="@{/words/addFromServer}" th:object="${word}">
+        <input type="hidden" th:field="*{name}" >
+        <div style="color: red" th:if="${#fields.hasErrors()}" th:errors="*{name}"></div>
+        <input th:each="translation:${word.getTranslations()}" type="hidden" name="translations" th:value="${translation}">
+        <input type="submit" value="Добавить">
+    </form>
+
+</div>
+<hr>
+<form method="get" action="/words">
+    <input type="submit" value="Все слова">
+</form>
 </body>
 </html>

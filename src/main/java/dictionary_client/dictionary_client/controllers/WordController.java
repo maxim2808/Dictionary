@@ -5,10 +5,15 @@ import dictionary_client.dictionary_client.dto.WordDTO;
 import dictionary_client.dictionary_client.models.Word;
 import dictionary_client.dictionary_client.services.TranslationService;
 import dictionary_client.dictionary_client.services.WordService;
+import dictionary_client.dictionary_client.utils.WordValidator;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -18,12 +23,14 @@ public class WordController {
     private final WordService wordService;
     private final TranslationService translationService;
     private final DataSourceTransactionManagerAutoConfiguration dataSourceTransactionManagerAutoConfiguration;
+    private final WordValidator wordValidator;
 
     @Autowired
-    public WordController(WordService wordService, TranslationService translationService, DataSourceTransactionManagerAutoConfiguration dataSourceTransactionManagerAutoConfiguration) {
+    public WordController(WordService wordService, TranslationService translationService, DataSourceTransactionManagerAutoConfiguration dataSourceTransactionManagerAutoConfiguration, WordValidator wordValidator) {
         this.wordService = wordService;
         this.translationService = translationService;
         this.dataSourceTransactionManagerAutoConfiguration = dataSourceTransactionManagerAutoConfiguration;
+        this.wordValidator = wordValidator;
     }
 
 
@@ -48,21 +55,63 @@ public class WordController {
     }
 
     @PostMapping("/add")
-    public String addWordPost(@ModelAttribute("word") WordDTO wordDTO) {
+    public String addWordPost(@ModelAttribute("word") @Valid WordDTO wordDTO, BindingResult bindingResult) {
+        wordValidator.validate(wordDTO, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "/words/addWord";
+        }
         wordService.addWord(wordDTO.getName(), wordDTO.getTranslations());
         return "redirect:/words";
     }
-    @GetMapping("/addFromServer")
-    public String addWordFromServerGet(Model model) {
+//    @GetMapping("/addFromServer")
+//    public String addWordFromServerGet(Model model) {
+//        model.addAttribute("name", new String());
+//        return "/words/addWordFromServer";
+//    }
+//
+//    @PostMapping("/addFromServer")
+//    public String addWordFromServerPost(@ModelAttribute("name") String name,) throws JsonProcessingException {
+//        System.out.println("post method name = " + name);
+//        WordDTO wordDTO = wordService.getWordFromServer(name);
+//
+//        return "redirect:/words";
+//    }
+
+        @GetMapping("/addFromServer")
+    public String addWordFromServerPost(Model model, @ModelAttribute("name") String name) throws JsonProcessingException {
         model.addAttribute("name", new String());
-        return "/words/addWordFromServer";
+
+        if (name!=null&&!name.isEmpty()) {
+            ResponseEntity<WordDTO> response = wordService.getWordFromServer(name);
+           if (response.getStatusCode().is2xxSuccessful()) {
+            WordDTO wordDTO = wordService.getWordFromServer(name).getBody();
+            model.addAttribute("word", wordDTO);
+           }
+           if(response.getStatusCode()==HttpStatus.INTERNAL_SERVER_ERROR){
+               String message = "Не удалось подключиться к серверу, попробуйте добавить слово вручную";
+               model.addAttribute("message", message);
+            }
+           if(response.getStatusCode()==HttpStatus.NOT_FOUND){
+               String message = "Слово не было найдено, попробуйте добавить слово вручную";
+               model.addAttribute("message", message);
+           }
+
+        }
+
+     return "/words/addWordFromServer";
     }
 
-    @PostMapping("/addFromServer")
-    public String addWordFromServerPost(@ModelAttribute("name") String name) throws JsonProcessingException {
-        wordService.getWordFromServer(name);
+        @PostMapping("/addFromServer")
+    public String addWordFromServerPost(@ModelAttribute("word")  @Valid WordDTO wordDTO, BindingResult bindingResult) throws JsonProcessingException {
+        wordValidator.validate(wordDTO, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "/words/addWordFromServer";
+        }
+        wordService.saveWordFromServer(wordDTO, true);
+
         return "redirect:/words";
     }
+
 
 
 
@@ -77,9 +126,10 @@ public class WordController {
     @GetMapping("/{id}/edit")
     public String editWordGet(@PathVariable int id, Model model) {
         Word word = wordService.getWordById(id).orElseThrow();
-;
+;       WordDTO wordDTO = new WordDTO();
+        wordDTO.setName(word.getName());
         model.addAttribute("idModel", id);
-        model.addAttribute("wordName", word.getName());
+        model.addAttribute("wordDTO", wordDTO);
         model.addAttribute("word", word);
         String newTranslation = "";
         model.addAttribute("newTranslation", newTranslation);
@@ -87,16 +137,20 @@ public class WordController {
     }
 
     @PatchMapping("/{id}/edit")
-    public String editWordPost(@ModelAttribute("wordName") String name, @PathVariable int id) {
-        System.out.println("new name: " + name);
-        System.out.println("patch method id " + id);
+    public String editWordPost(@ModelAttribute("wordDTO") @Valid WordDTO wordDTO, BindingResult bindingResult, @ModelAttribute("word") Word word2,
+                               @PathVariable int id, Model model) {
+        wordValidator.validate(wordDTO, bindingResult);
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("word", word2);
+            return "/words/editWord";
+        }
+        System.out.println("pathch " + wordDTO.getName());
         Word word = wordService.getWordById(id).orElseThrow();
-        word.setName(name);
-        System.out.println("word id " + word.getId());
+        word.setName(wordDTO.getName());
         wordService.edit(word, id);
         return "redirect:/words/" + id;
-
     }
+
 
     @PostMapping("/{id}/edit")
     public String addNewTranslation(@PathVariable int id, @ModelAttribute("newTranslation") String translation) {

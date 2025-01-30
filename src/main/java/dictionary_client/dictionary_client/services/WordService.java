@@ -8,8 +8,12 @@ import dictionary_client.dictionary_client.dto.WordDTO;
 import dictionary_client.dictionary_client.models.Translation;
 import dictionary_client.dictionary_client.models.Word;
 import dictionary_client.dictionary_client.repositories.WordRepository;
+import dictionary_client.dictionary_client.utils.WordNotFoundException;
+import dictionary_client.dictionary_client.utils.WordNotFoundResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
@@ -93,7 +97,8 @@ public class WordService {
     }
 
     public boolean addWord(String original, List<String> translationsString){
-
+        System.out.println("add word method " + original);
+        System.out.println("add word method " + translationsString);
         if(listContainWord(original)){
 
             return false;
@@ -165,29 +170,48 @@ public class WordService {
         wordRepository.save(word);
     }
 
-    public String getResponseFromServer(String wordName){
+
+    public ResponseEntity<String> getResponseFromServer(String wordName){
+
         RestTemplate template = new RestTemplate();
         String url = "http://localhost:9090/api/giveWord";
         String response;
+        ;
         try {
             response = template.postForObject(url, wordName, String.class);
         }
         catch (HttpClientErrorException e) {
-            System.out.println("Слово не было найдено");
-            return null;
+            if(e.getStatusCode() == HttpStatus.NOT_FOUND){
+                String responseBody = e.getResponseBodyAsString();
+                ObjectMapper mapper = new ObjectMapper();
+                try {
+                    WordNotFoundResponse message = mapper.readValue(responseBody, WordNotFoundResponse.class);
+                    System.out.println("Сообщение от сервера: " + message.getMessage());
+                    return new ResponseEntity<>(message.getMessage(), HttpStatus.NOT_FOUND);
+                } catch (JsonProcessingException ex) {
+                    System.out.println("Не удалось распарсить ответ сервера");
+                }
+
+            }
+
+            return new ResponseEntity<>("Слово не обнанужено", HttpStatus.NOT_FOUND);
+
         }
+
         catch (ResourceAccessException e){
             System.out.println("Не удалось подключиться к серверу");
-            return null;
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return response;
+        return new ResponseEntity<>(response, HttpStatus.OK );
     }
-    public WordDTO getWordFromServer(String wordName) throws JsonProcessingException {
-        String response = getResponseFromServer(wordName);
+    public ResponseEntity<WordDTO> getWordFromServer(String wordName) throws JsonProcessingException {
+        ResponseEntity<String> responseEntity = getResponseFromServer(wordName);
+        if(responseEntity.getStatusCode() == HttpStatus.OK){
+        String response = responseEntity.getBody();
         System.out.println("response: " + response);
-        if (response.equals("")||response==null){
-            return null;
-        }
+//        if (response.equals("")||response==null){
+//            return null;
+//        }
        // String response = template.postForObject(url, wordName, String.class);
         System.out.println("response " + response);
         ObjectMapper mapper = new ObjectMapper();
@@ -205,7 +229,9 @@ public class WordService {
         WordDTO wordDTO = new WordDTO();
         wordDTO.setName(nameFromResponse);
         wordDTO.setTranslations(stringList);
-        return wordDTO;
+        return new ResponseEntity<>(wordDTO, HttpStatus.OK);
+        }
+        else {return new ResponseEntity<>(null, responseEntity.getStatusCode());}
     }
 
     public void saveWordFromServer(WordDTO wordDTO, boolean needSave){
@@ -218,6 +244,7 @@ public class WordService {
     }
 
     public Optional<Word> getWordByName(String wordName){
+       // return wordRepository.findWordsByName(wordName).orElseThrow(WordNotFoundException::new);
         return wordRepository.findWordsByName(wordName);
     }
 

@@ -22,5 +22,10 @@
 <form method="get" action="/words/add">
     <input type="submit" value="Добавить слово">
 </form>
+<hr>
+<form method="get" th:action="@{/words/addFromServer}">
+    <input type="submit" value="Добавить слово с сервера">
+</form>
+
 </body>
 </html>

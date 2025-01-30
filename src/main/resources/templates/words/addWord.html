@@ -10,6 +10,8 @@
 <form th:method="POST" th:action="@{/words/add}" th:object="${word}">
     <label for="nameId">Введите слово</label>
     <input th:type="text" th:field="*{name}" id="nameId">
+    <div style="color: red" th:if="${#fields.hasErrors()}" th:errors="*{name}"></div>
+    <br>
     <label for="translationID">Введите основной перевод</label>
     <input th:type="text" th:field="*{translations[0]}" id="translationID">
     <input TYPE="submit" value="Добавить">
