@@ -32,24 +32,7 @@ public class KnowledgeTestService {
     }
 
 
-//    public void simpleTranslationTest(Model model){
-//        List<Word> allWords = wordService.findAllWords();
-//        System.out.println("allWords: " + allWords);
-//        for (int i = 0; i < countWordInTest; i++) {
-//            Word word = allWords.get(i);
-//            List<Word> shuffleListWithFixSize = getFixWordListForTest(allWords, word, i, model);
-//            System.out.println("word: " +word.getName());
-//            System.out.println(getListTranslationWithNumbering(shuffleListWithFixSize));
-//            boolean answer = checkAnswer(1, shuffleListWithFixSize, word);
-//            if (answer) {
-//                System.out.println("Правильный ответ");
-//            }
-//            else System.out.println("Неправильный ответ");
-//        }
-//        System.out.println("Тест закончен");
-//    }
-
-   public List<Word> getFixWordListForTest(int i){
+   public List<Word> getFixWordListForTest(){
         if(lastAnswerWasCorrect){
         initializeWordList();
         initializeWord();
@@ -74,7 +57,6 @@ public class KnowledgeTestService {
     private List<String> getListTranslationWithNumbering(List<Word> listWord){
 
         List<String> listTranslationString = new ArrayList<>();
-       // StringBuilder stringBuilder = new StringBuilder();
         for(int i = 0; i<listWord.size(); i++){
             int number = i+1;
 
@@ -88,9 +70,6 @@ public class KnowledgeTestService {
 
     public String getOneStringTranslationOneWord(Word word){
         StringBuilder stringBuilder = new StringBuilder();
-//        for(Translation translation:word.getTranslationList()){
-//            stringBuilder.append(translation.getName()).append(", ");
-//        }
         for (int i=0; i<word.getTranslationList().size(); i++){
             if (i+1==word.getTranslationList().size()){
                 stringBuilder.append(word.getTranslationList().get(i).getName()).append("");
@@ -109,10 +88,6 @@ public class KnowledgeTestService {
         }
 
         public Word initializeWord(){
-//        if (word==null){
-//            word = allListWord.get(0);
-//        }
-//        return word;
             word = allListWord.get(currentNumberInTest);
             return word;
         }
@@ -121,12 +96,8 @@ public class KnowledgeTestService {
 
 
     public boolean checkAnswer(int incomingNumber){
-
-        System.out.println("Введите свой ответ");
         int answerNumber = incomingNumber;
-        System.out.println("answerNumber: " + answerNumber);
         Word selectedWord = currentFixList.get(answerNumber);
-        System.out.println("selectedWord: " + selectedWord + " word: " + word.getName());
         if (selectedWord.equals(word)){
             currentNumberInTest++;
             wordService.increaseProgress(word);

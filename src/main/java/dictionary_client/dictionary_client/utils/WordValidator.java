@@ -21,7 +21,8 @@ public class WordValidator implements Validator {
     public void validate(Object target, Errors errors) {
         WordDTO wordDTO = (WordDTO) target;
         if (wordService.getWordByName(wordDTO.getName()).isPresent()) {
-          errors.rejectValue("name", "", "Это слово уже есть в словаре");
+            if (wordService.getWordByName(wordDTO.getName()).get().getId() != wordDTO.getId()) {
+          errors.rejectValue("name", "", "Это слово уже есть в словаре");}
         }
 
 

@@ -16,6 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
@@ -29,7 +32,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class WordService {
     @Value("${progressAtATime}")
-    int progressAtATimme;
+    int progressAtATime;
 
    private final WordRepository wordRepository;
    private final TranslationService translationService;
@@ -97,10 +100,7 @@ public class WordService {
     }
 
     public boolean addWord(String original, List<String> translationsString){
-        System.out.println("add word method " + original);
-        System.out.println("add word method " + translationsString);
         if(listContainWord(original)){
-
             return false;
         }
         else {
@@ -154,19 +154,19 @@ public class WordService {
 
     @Transactional
     public void increaseProgress(Word word){
-        if ((word.getProgress() + progressAtATimme)>=100){
+        if ((word.getProgress() + progressAtATime)>=100){
             word.setProgress(100);
         }
-        else{word.setProgress(word.getProgress() + progressAtATimme);}
+        else{word.setProgress(word.getProgress() + progressAtATime);}
         wordRepository.save(word);
     }
 
     @Transactional
     public void decreaseProgress(Word word){
-        if ((word.getProgress() - progressAtATimme)<=0){
+        if ((word.getProgress() - progressAtATime)<=0){
             word.setProgress(0);
         }
-        else { word.setProgress(word.getProgress() - progressAtATimme);}
+        else { word.setProgress(word.getProgress() - progressAtATime);}
         wordRepository.save(word);
     }
 
@@ -186,20 +186,19 @@ public class WordService {
                 ObjectMapper mapper = new ObjectMapper();
                 try {
                     WordNotFoundResponse message = mapper.readValue(responseBody, WordNotFoundResponse.class);
-                    System.out.println("Сообщение от сервера: " + message.getMessage());
                     return new ResponseEntity<>(message.getMessage(), HttpStatus.NOT_FOUND);
                 } catch (JsonProcessingException ex) {
-                    System.out.println("Не удалось распарсить ответ сервера");
+
                 }
 
             }
 
-            return new ResponseEntity<>("Слово не обнанужено", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Слово не обнаружено", HttpStatus.NOT_FOUND);
 
         }
 
         catch (ResourceAccessException e){
-            System.out.println("Не удалось подключиться к серверу");
+
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(response, HttpStatus.OK );
@@ -208,12 +207,6 @@ public class WordService {
         ResponseEntity<String> responseEntity = getResponseFromServer(wordName);
         if(responseEntity.getStatusCode() == HttpStatus.OK){
         String response = responseEntity.getBody();
-        System.out.println("response: " + response);
-//        if (response.equals("")||response==null){
-//            return null;
-//        }
-       // String response = template.postForObject(url, wordName, String.class);
-        System.out.println("response " + response);
         ObjectMapper mapper = new ObjectMapper();
         JsonNode obj = mapper.readTree(response);
         String nameFromResponse = obj.get("name").asText();
@@ -223,9 +216,6 @@ public class WordService {
             stringList.add(node.asText());
         }
 
-       // List<String> stringList = obj.get("translations").asLi;
-        System.out.println("nameFromResponse: " + nameFromResponse);
-        System.out.println("stringList: " + stringList);
         WordDTO wordDTO = new WordDTO();
         wordDTO.setName(nameFromResponse);
         wordDTO.setTranslations(stringList);
@@ -244,16 +234,8 @@ public class WordService {
     }
 
     public Optional<Word> getWordByName(String wordName){
-       // return wordRepository.findWordsByName(wordName).orElseThrow(WordNotFoundException::new);
         return wordRepository.findWordsByName(wordName);
     }
-
-
-
-
-
-
-
 
 
 }

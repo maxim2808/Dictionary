@@ -63,19 +63,6 @@ public class WordController {
         wordService.addWord(wordDTO.getName(), wordDTO.getTranslations());
         return "redirect:/words";
     }
-//    @GetMapping("/addFromServer")
-//    public String addWordFromServerGet(Model model) {
-//        model.addAttribute("name", new String());
-//        return "/words/addWordFromServer";
-//    }
-//
-//    @PostMapping("/addFromServer")
-//    public String addWordFromServerPost(@ModelAttribute("name") String name,) throws JsonProcessingException {
-//        System.out.println("post method name = " + name);
-//        WordDTO wordDTO = wordService.getWordFromServer(name);
-//
-//        return "redirect:/words";
-//    }
 
         @GetMapping("/addFromServer")
     public String addWordFromServerPost(Model model, @ModelAttribute("name") String name) throws JsonProcessingException {
@@ -124,7 +111,8 @@ public class WordController {
     }
 
     @GetMapping("/{id}/edit")
-    public String editWordGet(@PathVariable int id, Model model) {
+    public String editWordGet(@PathVariable int id, Model model)
+    {
         Word word = wordService.getWordById(id).orElseThrow();
 ;       WordDTO wordDTO = new WordDTO();
         wordDTO.setName(word.getName());
@@ -137,14 +125,16 @@ public class WordController {
     }
 
     @PatchMapping("/{id}/edit")
-    public String editWordPost(@ModelAttribute("wordDTO") @Valid WordDTO wordDTO, BindingResult bindingResult, @ModelAttribute("word") Word word2,
+    public String editWordPost(@ModelAttribute("wordDTO") @Valid WordDTO wordDTO, BindingResult bindingResult,
                                @PathVariable int id, Model model) {
         wordValidator.validate(wordDTO, bindingResult);
         if (bindingResult.hasErrors()) {
+            Word word2 = wordService.getWordById(id).orElseThrow();
+            model.addAttribute("wordDTO", wordDTO);
             model.addAttribute("word", word2);
+            model.addAttribute("idModel", id);
             return "/words/editWord";
         }
-        System.out.println("pathch " + wordDTO.getName());
         Word word = wordService.getWordById(id).orElseThrow();
         word.setName(wordDTO.getName());
         wordService.edit(word, id);
@@ -154,8 +144,6 @@ public class WordController {
 
     @PostMapping("/{id}/edit")
     public String addNewTranslation(@PathVariable int id, @ModelAttribute("newTranslation") String translation) {
-        System.out.println("post translation");
-        System.out.println("new translation: " + translation);
         Word word = wordService.getWordById(id).orElseThrow();
         translationService.addTranslation(word, translation);
         return "redirect:/words/" + id+"/edit";

@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.query.JSqlParserUtils;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.times;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -30,6 +32,8 @@ public class KnowledgeTestServiceTest {
     int testValue;
 
 
+
+
     private WordServiceTest wordServiceTest;
 
 
@@ -38,14 +42,12 @@ public class KnowledgeTestServiceTest {
        @Mock
     private WordService wordService;
 
-//
+
 
 
     @BeforeEach()
     public void getWords(){
-
         WordServiceTest ws = new WordServiceTest();
-        //knowledgeTestService.countWordInTest = countWordInTest;
 
       Mockito.lenient().when(wordService.findAllWords()).thenReturn(ws.getWords());
     }
@@ -55,44 +57,57 @@ public class KnowledgeTestServiceTest {
         knowledgeTestService.setCountWordInTest(6);
     }
 
-
-
-
 @Test
 void testGetAllWords() {
-    System.out.println("count word in test " +  countWordInTest);
-    System.out.println("test value " + testValue);
     List <Word> listForTest = wordService.findAllWords();
     Assertions.assertEquals(6, listForTest.size());
 }
 
-@Test
-    void getFixWordContainWords(){
 
-    List <Word> listForTest = wordService.findAllWords();
-    System.out.println("all words in test " + listForTest);
-    System.out.println(knowledgeTestService.getFixWordListForTest(listForTest, listForTest.get(1)));
-        Assertions.assertTrue(5<listForTest.size());
+    @Test
+    void testCheckAnswerShouldBeTrue(){
+        knowledgeTestService.getFixWordListForTest();
+        Assertions.assertTrue(testHaveCorrectAnswer());
+    }
 
-        for (Word word : listForTest) {
-            Assertions.assertTrue(knowledgeTestService.getFixWordListForTest(listForTest, word).contains(word));
+    @Test
+    void testHaveFinish(){
+     //   KnowledgeTestService knowledgeTestServiceSpy = Mockito.spy(knowledgeTestService);
+        int count = 0;
+        while (true){
+            knowledgeTestService.getFixWordListForTest();
+            testHaveCorrectAnswer();
+            if (
+                   knowledgeTestService.testShouldBeFinished()
+
+            )
+            {
+                count++;
+                break;
+            }
         }
-}
+        Assertions.assertEquals(1, count);
+      // Mockito.verify(knowledgeTestService, times(1)).testShouldBeFinished();
+
+    }
+
+
 
 
 @Test
 void everyWordInListIsUniqueInTetFixWordListForTest(){
 
-
     List <Word> listForTest = wordService.findAllWords();
   for (Word word : listForTest) {
-      List<Word> list = knowledgeTestService.getFixWordListForTest(listForTest,word);
+      List<Word> list = knowledgeTestService.getFixWordListForTest();
       Assertions.assertEquals(1, countWordInList(word,list));
   }
 
-
-
 }
+
+
+
+
 
     private int countWordInList(Word word, List<Word> listForTest) {
         int i = 0;
@@ -104,13 +119,19 @@ void everyWordInListIsUniqueInTetFixWordListForTest(){
         return i;
     }
 
-@Test
-    void testHasEnd(){
-    Scanner scanner = Mockito.mock(Scanner.class);
-    Mockito.doAnswer(invocation -> new Random().nextInt(knowledgeTestService.countWordInTest) + 1).when(scanner).nextInt();
-    knowledgeTestService.setCountWordInTest(6);
-        List <Word> listForTest = wordService.findAllWords();
-        Mockito.when(wordService.findAllWords()).thenReturn(listForTest);
-    knowledgeTestService.simpleTranslationTest(scanner);
-}
+    private boolean testHaveCorrectAnswer(){
+        boolean correctAnswer = false;
+        for (int i = 0; i < 6; i++) {
+            correctAnswer = knowledgeTestService.checkAnswer(i);
+            if (correctAnswer) {
+                break;
+            }
+        }
+        return correctAnswer;
+    }
+
+
+
+
+
 }

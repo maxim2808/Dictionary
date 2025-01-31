@@ -23,7 +23,7 @@ public class TestKnowledgeController {
 
     @GetMapping("")
     public String testGet(Model model) {
-        List<Word> list=  knowledgeTestService.getFixWordListForTest(0);
+        List<Word> list=  knowledgeTestService.getFixWordListForTest();
         model.addAttribute("list", list);
         model.addAttribute( "correctWord", knowledgeTestService.getWord());
         model.addAttribute( "wordNumber", knowledgeTestService.getCurrentNumberInTest());
@@ -34,8 +34,6 @@ public class TestKnowledgeController {
     @GetMapping("/{id}")
     public String testPost(Model model, @PathVariable int id, @ModelAttribute("correctedWord") Word correctWord)
     {
-        System.out.println("correctedWord: " + knowledgeTestService.getWord());
-        System.out.println("id: " + id);
         knowledgeTestService.checkAnswer(id);
         if (knowledgeTestService.testShouldBeFinished()){
             return "redirect:/test/finish";

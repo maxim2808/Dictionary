@@ -14,6 +14,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -22,6 +25,8 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+
+
 
 @ExtendWith(MockitoExtension.class)
 public class WordServiceTest {
@@ -36,7 +41,8 @@ public class WordServiceTest {
     @Mock
     private WordRepository wordRepository;
 
-
+    @Value("4")
+    int progressAtATime;
     @Test
     public void findAllOriginalSizeShouldBe6(){
 //        List<Word> words = getWords();
@@ -99,11 +105,38 @@ public class WordServiceTest {
     @Test
     public void theWordFromServerCanBeAdded() throws JsonProcessingException {
         String responseFromServer = "{\"name\":\"dog\",\"translations\":[\"собака\",\"собачка\",\"пёс\"]}";
+        ResponseEntity <String> responseEntity = ResponseEntity.ok(responseFromServer);
         WordService wordService1 = wordService;
         WordService spy = Mockito.spy(wordService1);
-        Mockito.doReturn(responseFromServer).when(spy).getResponseFromServer("dog");
-        Assertions.assertEquals("dog", spy.getWordFromServer("dog").getName());
+        Mockito.doReturn(responseEntity).when(spy).getResponseFromServer("dog");
+        Assertions.assertEquals("dog", spy.getWordFromServer("dog").getBody().getName());
     }
+
+
+    @Test
+    void maximumProgressEquals100(){
+        replaceList();
+        ReflectionTestUtils.setField(wordService, "progressAtATime", 4);
+        Word word = wordService.findAllWords().get(2);
+        for (int i = 0; i < 200; i++) {
+            wordService.increaseProgress(word);
+        }
+        Assertions.assertEquals(100, word.getProgress());
+    }
+
+    @Test
+    void minimumProgressEquals0(){
+        replaceList();
+        ReflectionTestUtils.setField(wordService, "progressAtATime", 4);
+        Word word = wordService.findAllWords().get(1);
+        word.setProgress(50);
+        for (int i = 0; i < 200; i++) {
+            wordService.decreaseProgress(word);
+        }
+        Assertions.assertEquals(0, word.getProgress());
+    }
+
+
 
 
     private List<Word> replaceList(){
