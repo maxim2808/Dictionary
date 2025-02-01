@@ -1,6 +1,6 @@
 package com.example.dictionary_server.controllers;
 
-import com.example.dictionary_server.models.StringWord;
+import com.example.dictionary_server.dto.WordDTO;
 import com.example.dictionary_server.models.Translation;
 import com.example.dictionary_server.models.Word;
 import com.example.dictionary_server.repositories.WordRepository;
@@ -55,9 +55,9 @@ public class WordServiceTest {
     void giveStringWordByNameReturnsStringWord(){
         Word word = getOneWord();
         Mockito.when(wordRepository.findWordByName("table")).thenReturn(Optional.of(word));
-        StringWord stringWord = wordService.giveStringWordByName("table");
-        Assertions.assertEquals("table", stringWord.getName());
-        Assertions.assertEquals("столик", stringWord.getTranslations().get(1));
+        WordDTO wordDTO = wordService.giveStringWordByName("table");
+        Assertions.assertEquals("table", wordDTO.getName());
+        Assertions.assertEquals("столик", wordDTO.getTranslations().get(1));
     }
 
     @Test

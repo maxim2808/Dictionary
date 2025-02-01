@@ -1,17 +1,13 @@
 package com.example.dictionary_server.services;
 
-import com.example.dictionary_server.models.StringWord;
+import com.example.dictionary_server.dto.WordDTO;
 import com.example.dictionary_server.models.Translation;
 import com.example.dictionary_server.models.Word;
 import com.example.dictionary_server.repositories.WordRepository;
 import com.example.dictionary_server.util.WordNotFoundException;
-import com.example.dictionary_server.util.WordNotFoundResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,7 +31,6 @@ public class WordService {
     }
 
     public List<String> findAllOriginal(){
-        //  System.out.println("find all originals started");
         List<Word> words = findAllWords();
         List<String> originalWords = new ArrayList<>();
         for (Word word : words) {
@@ -123,13 +118,13 @@ public class WordService {
     }
 
 
-    public StringWord giveStringWordByName(String wordName){
+    public WordDTO giveStringWordByName(String wordName){
         Word word = findWordByName(wordName);
         List<String> listStringTranslation = getTranslationOneWord(word);
-        StringWord stringWord = new StringWord();
-        stringWord.setName(word.getName());
-        stringWord.setTranslations(listStringTranslation);
-        return stringWord;
+        WordDTO wordDTO = new WordDTO();
+        wordDTO.setName(word.getName());
+        wordDTO.setTranslations(listStringTranslation);
+        return wordDTO;
     }
 
     public Word findWordByName(String wordName){

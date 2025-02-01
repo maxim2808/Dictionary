@@ -38,13 +38,6 @@ public class TranslationService {
 
 
 
-
-
-//    @Transactional
-//    public void editTranslation(Translation translation) {
-//     translationRepository.save(translation);
-//    }
-
     @Transactional
     public void addTranslation(Word word, String name) {
         Translation translation = new Translation();

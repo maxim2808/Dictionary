@@ -11,6 +11,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @SpringBootApplication
@@ -28,13 +29,6 @@ public class DictionaryServerApplication
 
 	@Override
 	public void run(String... args) throws Exception{
-		System.out.println(wordService.findAllWords());
-//		List<String> list = new ArrayList<>();
-//		list.add("держать");
-//		list.add("сохранять");
-//		list.add("хранить");
-//		wordService.addWord("keep", list);
-
 
 	}
 }
