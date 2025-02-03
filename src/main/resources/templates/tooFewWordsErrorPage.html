@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ошибка</title>
+</head>
+<body>
+<span>Слов в словаре должно быть не меньше, чем вариантов ответа в тесте</span>
+<div th:text="'Сейчас слов '+ ${sizeList}"></div>
+<div th:text="'Вариантов ответа ' + ${countInTest}"></div>
+<br>
+<form method="get" action="/words">
+    <input type="submit" value="На главную">
+</form>
+
+</body>
+</html>

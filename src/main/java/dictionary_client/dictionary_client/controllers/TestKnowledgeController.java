@@ -23,6 +23,13 @@ public class TestKnowledgeController {
 
     @GetMapping("")
     public String testGet(Model model) {
+
+
+        if (wordService.findAllWords().size()<knowledgeTestService.countWordInTest){
+            model.addAttribute("sizeList", wordService.findAllWords().size());
+            model.addAttribute("countInTest", knowledgeTestService.countWordInTest);
+            return "/tooFewWordsErrorPage";
+        }
         List<Word> list=  knowledgeTestService.getFixWordListForTest();
         model.addAttribute("list", list);
         model.addAttribute( "correctWord", knowledgeTestService.getWord());
@@ -47,4 +54,9 @@ public class TestKnowledgeController {
         return "finishTest";
     }
 
+    @GetMapping("/interrupt")
+    public String interrupt(){
+        knowledgeTestService.finishTest();
+        return "redirect:/words";
+    }
 }

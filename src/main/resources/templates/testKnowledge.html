@@ -19,6 +19,10 @@
 
     <a th:href="@{/test/{id}(id=${index.index}, correctWord=${correctWord})}" th:text="${word.getStringTranslation()}">Link Text</a>
 </div>
+<br>
+<form th:method="GET" th:action="@{/test/interrupt}">
+    <input type="submit" value="Закончить тест">
+</form>
 
 </body>
 </html>
