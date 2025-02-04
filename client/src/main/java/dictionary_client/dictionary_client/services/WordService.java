@@ -34,8 +34,11 @@ public class WordService {
     @Value("${progressAtATime}")
     int progressAtATime;
 
+    @Value("${addressOfServer}")
+    String addressOfServer;
    private final WordRepository wordRepository;
    private final TranslationService translationService;
+
 
     @Autowired
     public WordService(WordRepository wordRepository, TranslationService translationService) {
@@ -174,7 +177,7 @@ public class WordService {
     public ResponseEntity<String> getResponseFromServer(String wordName){
 
         RestTemplate template = new RestTemplate();
-        String url = "http://localhost:9090/api/giveWord";
+        String url = "http://"+addressOfServer+"/api/giveWord";
         String response;
         ;
         try {
